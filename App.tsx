@@ -1,20 +1,35 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+/**
+ * Memento - Main App Entry
+ * Therapeutic memory app for Alzheimer's patients
+ */
+
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { StyleSheet } from 'react-native';
+import { GameProvider } from './src/context/GameContext';
+import { ProfileProvider } from './src/context/ProfileContext';
+import { LanguageProvider } from './src/i18n';
+import { AppNavigator } from './src/navigation/AppNavigator';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <GestureHandlerRootView style={styles.container}>
+      <LanguageProvider>
+        <ProfileProvider>
+          <GameProvider>
+            <NavigationContainer>
+              <AppNavigator />
+            </NavigationContainer>
+          </GameProvider>
+        </ProfileProvider>
+      </LanguageProvider>
+    </GestureHandlerRootView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
