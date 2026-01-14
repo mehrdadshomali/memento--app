@@ -10,6 +10,7 @@ import { StyleSheet } from 'react-native';
 import { GameProvider } from './src/context/GameContext';
 import { ProfileProvider } from './src/context/ProfileContext';
 import { SafetyProvider } from './src/context/SafetyContext';
+import { RoutineProvider } from './src/context/RoutineContext';
 import { LanguageProvider } from './src/i18n';
 import { AppNavigator } from './src/navigation/AppNavigator';
 
@@ -19,11 +20,13 @@ export default function App() {
       <LanguageProvider>
         <ProfileProvider>
           <SafetyProvider>
-            <GameProvider>
-              <NavigationContainer>
-                <AppNavigator />
-              </NavigationContainer>
-            </GameProvider>
+            <RoutineProvider>
+              <GameProvider>
+                <NavigationContainer>
+                  <AppNavigator />
+                </NavigationContainer>
+              </GameProvider>
+            </RoutineProvider>
           </SafetyProvider>
         </ProfileProvider>
       </LanguageProvider>
