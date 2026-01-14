@@ -44,7 +44,7 @@ export function LocationPage({ patient, activities }: LocationPageProps) {
           : 'linear-gradient(135deg, #FFB74D 0%, #FFCC80 100%)'
       }}>
         <div className="patient-avatar">
-          {location?.isHome ? '🏠' : '📍'}
+          {location?.isHome ? <Home size={28} /> : <MapPin size={28} />}
         </div>
         <div className="patient-info">
           <h3>{patient.name}</h3>

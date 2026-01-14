@@ -80,9 +80,9 @@ export function ContentManager({ cards }: ContentManagerProps) {
               
               <div className="content-item-info">
                 <h4>{card.correctLabel}</h4>
-                <p>
-                  {card.type === 'visual' ? '📷 Fotoğraf' : '🔊 Ses'} • 
-                  {card.category && ` ${card.category}`}
+                <p style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  {card.type === 'visual' ? <><Image size={12} /> Fotoğraf</> : <><Volume2 size={12} /> Ses</>}
+                  {card.category && ` • ${card.category}`}
                 </p>
                 {card.hint && (
                   <p style={{ fontStyle: 'italic', marginTop: '4px' }}>

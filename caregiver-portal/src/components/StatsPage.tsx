@@ -1,4 +1,5 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
+import { Gamepad2, CheckCircle, Clock, BarChart3 } from 'lucide-react';
 import type { DailyStats, ActivityLog } from '../types';
 import { format } from 'date-fns';
 import { tr } from 'date-fns/locale';
@@ -49,22 +50,22 @@ export function StatsPage({ stats, activities }: StatsPageProps) {
       {/* Summary Stats */}
       <div className="dashboard-grid">
         <div className="stat-card">
-          <div className="stat-icon primary">🎮</div>
+          <div className="stat-icon primary"><Gamepad2 size={24} /></div>
           <div className="stat-value">{avgGames}</div>
           <div className="stat-label">Ort. Günlük Oyun</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon success">✓</div>
+          <div className="stat-icon success"><CheckCircle size={24} /></div>
           <div className="stat-value">{avgRoutines}</div>
           <div className="stat-label">Ort. Günlük Rutin</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon warning">⏱</div>
+          <div className="stat-icon warning"><Clock size={24} /></div>
           <div className="stat-value">{avgTime} dk</div>
           <div className="stat-label">Ort. Kullanım Süresi</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon info">📊</div>
+          <div className="stat-icon info"><BarChart3 size={24} /></div>
           <div className="stat-value">%{avgCompletion}</div>
           <div className="stat-label">Ort. Tamamlanma</div>
         </div>

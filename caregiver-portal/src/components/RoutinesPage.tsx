@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Edit2, Trash2, Clock } from 'lucide-react';
+import { Plus, Edit2, Trash2, Clock, Pill, UtensilsCrossed, Footprints, Calendar, Droplets, Users, Pin } from 'lucide-react';
 import type { Routine } from '../types';
 
 interface RoutinesPageProps {
@@ -8,14 +8,14 @@ interface RoutinesPageProps {
 
 const DAYS = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
 
-const CATEGORIES: Record<string, { label: string; icon: string; color: string }> = {
-  medication: { label: 'İlaç', icon: '💊', color: '#E57373' },
-  meal: { label: 'Yemek', icon: '🍽️', color: '#FFB74D' },
-  exercise: { label: 'Egzersiz', icon: '🚶', color: '#81C784' },
-  appointment: { label: 'Randevu', icon: '📅', color: '#64B5F6' },
-  hygiene: { label: 'Hijyen', icon: '🚿', color: '#BA68C8' },
-  social: { label: 'Sosyal', icon: '👥', color: '#4DB6AC' },
-  other: { label: 'Diğer', icon: '📌', color: '#90A4AE' },
+const CATEGORIES: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
+  medication: { label: 'İlaç', icon: <Pill size={20} />, color: '#E57373' },
+  meal: { label: 'Yemek', icon: <UtensilsCrossed size={20} />, color: '#FFB74D' },
+  exercise: { label: 'Egzersiz', icon: <Footprints size={20} />, color: '#81C784' },
+  appointment: { label: 'Randevu', icon: <Calendar size={20} />, color: '#64B5F6' },
+  hygiene: { label: 'Hijyen', icon: <Droplets size={20} />, color: '#BA68C8' },
+  social: { label: 'Sosyal', icon: <Users size={20} />, color: '#4DB6AC' },
+  other: { label: 'Diğer', icon: <Pin size={20} />, color: '#90A4AE' },
 };
 
 export function RoutinesPage({ routines }: RoutinesPageProps) {
@@ -74,9 +74,9 @@ export function RoutinesPage({ routines }: RoutinesPageProps) {
               
               return (
                 <div key={routine.id} className="routine-item">
-                  <div 
+                <div 
                     className="routine-icon" 
-                    style={{ background: `${category.color}20` }}
+                    style={{ background: `${category.color}20`, color: category.color }}
                   >
                     {category.icon}
                   </div>
@@ -138,7 +138,7 @@ export function RoutinesPage({ routines }: RoutinesPageProps) {
             >
               <div 
                 className="stat-icon" 
-                style={{ background: `${color}20`, fontSize: '1.5rem' }}
+                style={{ background: `${color}20`, color: color }}
               >
                 {icon}
               </div>

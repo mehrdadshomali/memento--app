@@ -1,9 +1,19 @@
-import { Activity, CheckCircle, Clock, Gamepad2 } from 'lucide-react';
+import { Activity, CheckCircle, Clock, Gamepad2, User, Home, MapPin, Pill, UtensilsCrossed, Footprints, Calendar, Droplets, Users, Pin } from 'lucide-react';
 import type { PatientData } from '../types';
 import { ActivityFeed } from './ActivityFeed';
 import { LocationCard } from './LocationCard';
 import { formatDistanceToNow } from 'date-fns';
 import { tr } from 'date-fns/locale';
+
+const CATEGORY_ICONS: Record<string, React.ReactNode> = {
+  medication: <Pill size={20} />,
+  meal: <UtensilsCrossed size={20} />,
+  exercise: <Footprints size={20} />,
+  appointment: <Calendar size={20} />,
+  hygiene: <Droplets size={20} />,
+  social: <Users size={20} />,
+  other: <Pin size={20} />,
+};
 
 interface DashboardProps {
   data: PatientData;
@@ -27,14 +37,14 @@ export function Dashboard({ data }: DashboardProps) {
 
       {/* Patient Card */}
       <div className="patient-card">
-        <div className="patient-avatar">👤</div>
+        <div className="patient-avatar"><User size={32} /></div>
         <div className="patient-info">
           <h3>{patient.name}</h3>
           <p>Son aktivite: {lastActiveText}</p>
         </div>
         <div className="patient-status">
           <span className={`status-badge ${patient.location?.isHome ? 'home' : 'away'}`}>
-            {patient.location?.isHome ? '🏠 Evde' : '📍 Dışarıda'}
+            {patient.location?.isHome ? <><Home size={14} /> Evde</> : <><MapPin size={14} /> Dışarıda</>}
           </span>
         </div>
       </div>
@@ -94,8 +104,8 @@ export function Dashboard({ data }: DashboardProps) {
         <div className="routine-list">
           {routines.slice(0, 4).map((routine) => (
             <div key={routine.id} className="routine-item">
-              <div className="routine-icon" style={{ background: `${routine.color}20` }}>
-                {routine.icon}
+              <div className="routine-icon" style={{ background: `${routine.color}20`, color: routine.color }}>
+                {CATEGORY_ICONS[routine.category] || <Pin size={20} />}
               </div>
               <div className="routine-info">
                 <h4>{routine.title}</h4>

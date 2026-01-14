@@ -1,4 +1,4 @@
-import { Bell, Shield, Globe, Moon, HelpCircle } from 'lucide-react';
+import { Bell, Shield, Globe, Moon, HelpCircle, BookOpen, MessageCircleQuestion, Mail } from 'lucide-react';
 
 export function SettingsPage() {
   return (
@@ -142,23 +142,32 @@ export function SettingsPage() {
           <a href="#" style={{ 
             color: 'var(--color-primary)', 
             textDecoration: 'none',
-            fontSize: '0.95rem'
+            fontSize: '0.95rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
           }}>
-            📖 Kullanım Kılavuzu
+            <BookOpen size={16} /> Kullanım Kılavuzu
           </a>
           <a href="#" style={{ 
             color: 'var(--color-primary)', 
             textDecoration: 'none',
-            fontSize: '0.95rem'
+            fontSize: '0.95rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
           }}>
-            ❓ Sık Sorulan Sorular
+            <MessageCircleQuestion size={16} /> Sık Sorulan Sorular
           </a>
           <a href="#" style={{ 
             color: 'var(--color-primary)', 
             textDecoration: 'none',
-            fontSize: '0.95rem'
+            fontSize: '0.95rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
           }}>
-            📧 Destek ile İletişim
+            <Mail size={16} /> Destek ile İletişim
           </a>
         </div>
         
