@@ -16,6 +16,7 @@ import {
 import { COLORS, FONTS, SPACING, BORDER_RADIUS, SHADOWS } from '../constants/theme';
 import { useLanguage } from '../i18n';
 import { useProfile } from '../context/ProfileContext';
+import { useSafety } from '../context/SafetyContext';
 
 interface HomeScreenProps {
   navigation: any;
@@ -24,6 +25,7 @@ interface HomeScreenProps {
 export function HomeScreen({ navigation }: HomeScreenProps) {
   const { t, language, setLanguage } = useLanguage();
   const { currentProfile, logout } = useProfile();
+  const { safetyProfile, isOutsideHome, distanceFromHome, getDirectionsToHome } = useSafety();
 
   const visualCards = currentProfile?.cards.filter(c => c.type === 'visual') || [];
   const audioCards = currentProfile?.cards.filter(c => c.type === 'audio') || [];
@@ -48,6 +50,12 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
     setLanguage(language === 'en' ? 'tr' : 'en');
   };
 
+  const formatDistance = (meters: number | null) => {
+    if (meters === null) return '';
+    if (meters < 1000) return `${Math.round(meters)} m`;
+    return `${(meters / 1000).toFixed(1)} km`;
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
@@ -69,6 +77,26 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
           </Text>
         </TouchableOpacity>
       </View>
+
+      {/* Safety Alert Banner */}
+      {safetyProfile?.homeLocation && isOutsideHome && (
+        <TouchableOpacity 
+          style={styles.safetyBanner}
+          onPress={getDirectionsToHome}
+        >
+          <Text style={styles.safetyIcon}>🏠</Text>
+          <View style={styles.safetyInfo}>
+            <Text style={styles.safetyTitle}>Evden Uzaktasınız</Text>
+            <Text style={styles.safetySubtitle}>
+              {safetyProfile.homeLocation.address}
+            </Text>
+          </View>
+          <View style={styles.safetyAction}>
+            <Text style={styles.safetyDistance}>{formatDistance(distanceFromHome)}</Text>
+            <Text style={styles.safetyActionText}>Yol Tarifi →</Text>
+          </View>
+        </TouchableOpacity>
+      )}
 
       {/* Header */}
       <View style={styles.header}>
@@ -109,6 +137,22 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
             </Text>
           </View>
           <Text style={styles.arrow}>→</Text>
+        </TouchableOpacity>
+
+        {/* Safety Button */}
+        <TouchableOpacity
+          style={styles.safetyButton}
+          onPress={() => navigation.navigate('Safety')}
+        >
+          <Text style={styles.safetyButtonIcon}>🏠</Text>
+          <Text style={styles.safetyButtonText}>
+            {safetyProfile?.homeLocation ? 'Güvenlik & Ev Konumu' : 'Ev Konumunu Ayarla'}
+          </Text>
+          {safetyProfile?.isMonitoringEnabled && (
+            <View style={styles.activeBadge}>
+              <Text style={styles.activeBadgeText}>Aktif</Text>
+            </View>
+          )}
         </TouchableOpacity>
 
         {/* Caregiver Mode Button */}
@@ -181,10 +225,50 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
     letterSpacing: FONTS.letterSpacing.wider,
   },
+  safetyBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF3E0',
+    marginHorizontal: SPACING.lg,
+    marginTop: SPACING.md,
+    padding: SPACING.md,
+    borderRadius: BORDER_RADIUS.lg,
+    borderWidth: 1,
+    borderColor: '#FFCC80',
+  },
+  safetyIcon: {
+    fontSize: 28,
+    marginRight: SPACING.md,
+  },
+  safetyInfo: {
+    flex: 1,
+  },
+  safetyTitle: {
+    fontSize: FONTS.sizes.sm,
+    fontWeight: FONTS.weights.medium,
+    color: COLORS.textPrimary,
+  },
+  safetySubtitle: {
+    fontSize: FONTS.sizes.xs,
+    color: COLORS.textSecondary,
+    marginTop: 2,
+  },
+  safetyAction: {
+    alignItems: 'flex-end',
+  },
+  safetyDistance: {
+    fontSize: FONTS.sizes.sm,
+    fontWeight: FONTS.weights.medium,
+    color: COLORS.primary,
+  },
+  safetyActionText: {
+    fontSize: FONTS.sizes.xs,
+    color: COLORS.primary,
+  },
   header: {
     alignItems: 'center',
-    paddingTop: SPACING.xl,
-    paddingBottom: SPACING.xl,
+    paddingTop: SPACING.lg,
+    paddingBottom: SPACING.lg,
     paddingHorizontal: SPACING.xl,
   },
   title: {
@@ -259,12 +343,44 @@ const styles = StyleSheet.create({
     color: COLORS.textLight,
     fontWeight: FONTS.weights.light,
   },
+  safetyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#E8F5E9',
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.lg,
+    borderRadius: BORDER_RADIUS.md,
+    borderWidth: 1,
+    borderColor: '#A5D6A7',
+    marginTop: SPACING.sm,
+  },
+  safetyButtonIcon: {
+    fontSize: 20,
+    marginRight: SPACING.sm,
+  },
+  safetyButtonText: {
+    fontSize: FONTS.sizes.sm,
+    fontWeight: FONTS.weights.medium,
+    color: '#2E7D32',
+  },
+  activeBadge: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 2,
+    paddingHorizontal: SPACING.sm,
+    borderRadius: BORDER_RADIUS.full,
+    marginLeft: SPACING.sm,
+  },
+  activeBadgeText: {
+    fontSize: FONTS.sizes.xs,
+    color: COLORS.textOnPrimary,
+    fontWeight: FONTS.weights.medium,
+  },
   caregiverButton: {
     backgroundColor: COLORS.backgroundMuted,
     paddingVertical: SPACING.md,
     borderRadius: BORDER_RADIUS.md,
     alignItems: 'center',
-    marginTop: SPACING.md,
   },
   caregiverButtonText: {
     fontSize: FONTS.sizes.sm,

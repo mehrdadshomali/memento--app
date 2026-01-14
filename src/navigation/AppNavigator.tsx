@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { HomeScreen, GameScreen, ProfileSelectScreen, CaregiverScreen } from '../screens';
+import { HomeScreen, GameScreen, ProfileSelectScreen, CaregiverScreen, SafetyScreen } from '../screens';
 import { useProfile } from '../context/ProfileContext';
 import { CardType } from '../types';
 import { COLORS } from '../constants/theme';
@@ -15,6 +15,7 @@ export type RootStackParamList = {
   Home: undefined;
   Game: { gameType: CardType };
   Caregiver: undefined;
+  Safety: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -39,6 +40,7 @@ export function AppNavigator() {
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Game" component={GameScreen} />
           <Stack.Screen name="Caregiver" component={CaregiverScreen} />
+          <Stack.Screen name="Safety" component={SafetyScreen} />
         </>
       ) : (
         <Stack.Screen name="ProfileSelect" component={ProfileSelectScreen} />

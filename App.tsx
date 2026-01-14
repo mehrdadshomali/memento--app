@@ -9,6 +9,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native';
 import { GameProvider } from './src/context/GameContext';
 import { ProfileProvider } from './src/context/ProfileContext';
+import { SafetyProvider } from './src/context/SafetyContext';
 import { LanguageProvider } from './src/i18n';
 import { AppNavigator } from './src/navigation/AppNavigator';
 
@@ -17,11 +18,13 @@ export default function App() {
     <GestureHandlerRootView style={styles.container}>
       <LanguageProvider>
         <ProfileProvider>
-          <GameProvider>
-            <NavigationContainer>
-              <AppNavigator />
-            </NavigationContainer>
-          </GameProvider>
+          <SafetyProvider>
+            <GameProvider>
+              <NavigationContainer>
+                <AppNavigator />
+              </NavigationContainer>
+            </GameProvider>
+          </SafetyProvider>
         </ProfileProvider>
       </LanguageProvider>
     </GestureHandlerRootView>
