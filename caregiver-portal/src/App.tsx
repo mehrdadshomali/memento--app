@@ -1,35 +1,47 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
+import { 
+  Sidebar, 
+  Dashboard, 
+  LocationPage, 
+  RoutinesPage, 
+  ContentManager, 
+  StatsPage, 
+  SettingsPage 
+} from './components';
+import { mockPatientData } from './data/mockData';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const data = mockPatientData;
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'dashboard':
+        return <Dashboard data={data} />;
+      case 'location':
+        return <LocationPage patient={data.patient} activities={data.activities} />;
+      case 'routines':
+        return <RoutinesPage routines={data.routines} />;
+      case 'content':
+        return <ContentManager cards={data.cards} />;
+      case 'stats':
+        return <StatsPage stats={data.stats} activities={data.activities} />;
+      case 'settings':
+        return <SettingsPage />;
+      default:
+        return <Dashboard data={data} />;
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="app-container">
+      <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
+      <main className="main-content">
+        {renderContent()}
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;
