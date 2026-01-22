@@ -108,12 +108,11 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
 
             const cards: MemoryCard[] = (memories || []).map((memory) => ({
               id: memory.id,
-              title: memory.title,
-              description: memory.description || '',
-              imageUri: memory.media_url || undefined,
+              imageUri: memory.media_url || '',
               audioUri: memory.media_type === 'audio' ? memory.media_url : undefined,
-              videoUri: memory.media_type === 'video' ? memory.media_url : undefined,
-              type: memory.media_type === 'photo' ? 'photo' : memory.media_type === 'video' ? 'video' : 'audio',
+              correctLabel: memory.title,
+              type: memory.media_type === 'video' ? 'visual' : memory.media_type === 'photo' ? 'visual' : 'audio',
+              category: memory.description,
             }));
 
             return {
@@ -190,11 +189,8 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
   const addCard = async (card: Omit<MemoryCard, 'id'>) => {
     if (!currentProfile) return;
 
-    let mediaUrl = card.imageUri || card.videoUri || card.audioUri;
-    let mediaType: 'photo' | 'video' | 'audio' = 'photo';
-
-    if (card.videoUri) mediaType = 'video';
-    else if (card.audioUri) mediaType = 'audio';
+    let mediaUrl = card.imageUri || card.audioUri;
+    let mediaType: 'photo' | 'video' | 'audio' = card.type === 'audio' ? 'audio' : 'photo';
 
     // Media dosyası varsa Supabase Storage'a yükle
     if (mediaUrl && mediaUrl.startsWith('file://')) {
@@ -227,8 +223,8 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
       .from('memories')
       .insert({
         profile_id: currentProfile.id,
-        title: card.title,
-        description: card.description,
+        title: card.correctLabel,
+        description: card.category || '',
         media_url: mediaUrl,
         media_type: mediaType,
       })
@@ -239,12 +235,11 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
 
     const newCard: MemoryCard = {
       id: data.id,
-      title: data.title,
-      description: data.description || '',
-      imageUri: mediaType === 'photo' ? mediaUrl : undefined,
-      videoUri: mediaType === 'video' ? mediaUrl : undefined,
+      imageUri: mediaType === 'photo' ? mediaUrl || '' : '',
       audioUri: mediaType === 'audio' ? mediaUrl : undefined,
+      correctLabel: data.title,
       type: card.type,
+      category: data.description,
     };
 
     const updatedProfile = {
@@ -278,8 +273,8 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     const { error } = await supabase
       .from('memories')
       .update({
-        title: updates.title,
-        description: updates.description,
+        title: updates.correctLabel,
+        description: updates.category,
       })
       .eq('id', cardId);
 

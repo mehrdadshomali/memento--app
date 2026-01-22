@@ -26,8 +26,6 @@ export const ROUTINE_CATEGORIES: Record<RoutineCategory, { icon: string; color: 
 export const DAY_NAMES = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
 export const DAY_NAMES_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-export type RoutineCategory = 'medication' | 'meal' | 'exercise' | 'appointment' | 'hygiene' | 'social' | 'other';
-
 export interface Routine {
   id: string;
   title: string;
@@ -187,10 +185,11 @@ export function RoutineProvider({ children }: { children: ReactNode }) {
           sound: true,
         },
         trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
           hour: hours,
           minute: minutes,
           repeats: true,
-        },
+        } as Notifications.CalendarTriggerInput,
       });
 
       return notificationId;

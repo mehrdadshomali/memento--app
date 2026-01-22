@@ -1,10 +1,11 @@
 /**
  * Memento - App Navigator
- * Profil bazlı navigasyon
+ * Profil bazlı navigasyon + Authentication
  */
 
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import { ActivityIndicator, View } from 'react-native';
 import { 
   HomeScreen, 
   GameScreen, 
@@ -14,11 +15,14 @@ import {
   RoutineScreen,
   AddRoutineScreen,
 } from '../screens';
+import AuthScreen from '../screens/AuthScreen';
+import { useAuth } from '../context/AuthContext';
 import { useProfile } from '../context/ProfileContext';
 import { CardType } from '../types';
 import { COLORS } from '../constants/theme';
 
 export type RootStackParamList = {
+  Auth: undefined;
   ProfileSelect: undefined;
   Home: undefined;
   Game: { gameType: CardType };
@@ -31,10 +35,15 @@ export type RootStackParamList = {
 const Stack = createStackNavigator<RootStackParamList>();
 
 export function AppNavigator() {
-  const { currentProfile, isLoading } = useProfile();
+  const { user, loading: authLoading } = useAuth();
+  const { currentProfile, isLoading: profileLoading } = useProfile();
 
-  if (isLoading) {
-    return null;
+  if (authLoading || profileLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.background }}>
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      </View>
+    );
   }
 
   return (
@@ -45,7 +54,9 @@ export function AppNavigator() {
         gestureEnabled: true,
       }}
     >
-      {currentProfile ? (
+      {!user ? (
+        <Stack.Screen name="Auth" component={AuthScreen} />
+      ) : currentProfile ? (
         <>
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Game" component={GameScreen} />
