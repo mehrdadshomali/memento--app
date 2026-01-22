@@ -1,12 +1,14 @@
 /**
  * Memento - Profile Context
- * Kullanıcı profilleri ve içerik yönetimi (Supabase)
+ * Kullanıcı profilleri ve içerik yönetimi (Local Storage)
  */
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserProfile, MemoryCard } from '../types';
-import { supabase } from '../config/supabase';
-import { useAuth } from './AuthContext';
+
+const PROFILES_KEY = 'memento_profiles';
+const CURRENT_PROFILE_KEY = 'memento_current_profile';
 
 interface ProfileContextType {
   profiles: UserProfile[];
@@ -24,111 +26,28 @@ interface ProfileContextType {
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
 export function ProfileProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth();
   const [profiles, setProfiles] = useState<UserProfile[]>([]);
   const [currentProfile, setCurrentProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (user) {
-      loadData();
-      subscribeToChanges();
-    } else {
-      setProfiles([]);
-      setCurrentProfile(null);
-      setIsLoading(false);
-    }
-  }, [user]);
-
-  const subscribeToChanges = () => {
-    if (!user) return;
-
-    // Profil değişikliklerini dinle
-    const profileSubscription = supabase
-      .channel('profile-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'profiles',
-          filter: `user_id=eq.${user.id}`,
-        },
-        () => {
-          loadData();
-        }
-      )
-      .subscribe();
-
-    // Memories değişikliklerini dinle
-    const memoriesSubscription = supabase
-      .channel('memories-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'memories',
-        },
-        () => {
-          loadData();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      profileSubscription.unsubscribe();
-      memoriesSubscription.unsubscribe();
-    };
-  };
+    loadData();
+  }, []);
 
   const loadData = async () => {
-    if (!user) return;
-
     try {
-      // Profilleri yükle
-      const { data: profilesData, error: profilesError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', user.id);
+      const [profilesData, currentId] = await Promise.all([
+        AsyncStorage.getItem(PROFILES_KEY),
+        AsyncStorage.getItem(CURRENT_PROFILE_KEY),
+      ]);
 
-      if (profilesError) throw profilesError;
+      if (profilesData) {
+        const loadedProfiles = JSON.parse(profilesData) as UserProfile[];
+        setProfiles(loadedProfiles);
 
-      if (profilesData && profilesData.length > 0) {
-        // Her profil için memories'leri yükle
-        const profilesWithCards = await Promise.all(
-          profilesData.map(async (profile) => {
-            const { data: memories, error: memoriesError } = await supabase
-              .from('memories')
-              .select('*')
-              .eq('profile_id', profile.id)
-              .order('created_at', { ascending: false });
-
-            if (memoriesError) throw memoriesError;
-
-            const cards: MemoryCard[] = (memories || []).map((memory) => ({
-              id: memory.id,
-              imageUri: memory.media_url || '',
-              audioUri: memory.media_type === 'audio' ? memory.media_url : undefined,
-              correctLabel: memory.title,
-              type: memory.media_type === 'video' ? 'visual' : memory.media_type === 'photo' ? 'visual' : 'audio',
-              category: memory.description,
-            }));
-
-            return {
-              id: profile.id,
-              name: profile.name,
-              createdAt: profile.created_at,
-              cards,
-            };
-          })
-        );
-
-        setProfiles(profilesWithCards);
-
-        // İlk profili otomatik seç
-        if (!currentProfile && profilesWithCards.length > 0) {
-          setCurrentProfile(profilesWithCards[0]);
+        if (currentId) {
+          const current = loadedProfiles.find((p) => p.id === currentId);
+          if (current) setCurrentProfile(current);
         }
       }
     } catch (error) {
@@ -138,31 +57,26 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const saveProfiles = async (newProfiles: UserProfile[]) => {
+    try {
+      await AsyncStorage.setItem(PROFILES_KEY, JSON.stringify(newProfiles));
+      setProfiles(newProfiles);
+    } catch (error) {
+      console.log('Error saving profiles:', error);
+    }
+  };
+
   const createProfile = async (name: string): Promise<UserProfile> => {
-    if (!user) throw new Error('User not authenticated');
-
-    const { data, error } = await supabase
-      .from('profiles')
-      .insert({
-        user_id: user.id,
-        name: name.trim(),
-        age: 0,
-        diagnosis: '',
-      })
-      .select()
-      .single();
-
-    if (error) throw error;
-
     const newProfile: UserProfile = {
-      id: data.id,
-      name: data.name,
-      createdAt: data.created_at,
+      id: Date.now().toString(),
+      name: name.trim(),
+      createdAt: new Date().toISOString(),
       cards: [],
     };
 
-    setProfiles([...profiles, newProfile]);
-    setCurrentProfile(newProfile);
+    const newProfiles = [...profiles, newProfile];
+    await saveProfiles(newProfiles);
+    await selectProfile(newProfile.id);
     return newProfile;
   };
 
@@ -170,76 +84,26 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     const profile = profiles.find((p) => p.id === profileId);
     if (profile) {
       setCurrentProfile(profile);
+      await AsyncStorage.setItem(CURRENT_PROFILE_KEY, profileId);
     }
   };
 
   const deleteProfile = async (profileId: string) => {
-    const { error } = await supabase.from('profiles').delete().eq('id', profileId);
-
-    if (error) throw error;
-
     const newProfiles = profiles.filter((p) => p.id !== profileId);
-    setProfiles(newProfiles);
+    await saveProfiles(newProfiles);
 
     if (currentProfile?.id === profileId) {
-      setCurrentProfile(newProfiles[0] || null);
+      setCurrentProfile(null);
+      await AsyncStorage.removeItem(CURRENT_PROFILE_KEY);
     }
   };
 
   const addCard = async (card: Omit<MemoryCard, 'id'>) => {
     if (!currentProfile) return;
 
-    let mediaUrl = card.imageUri || card.audioUri;
-    let mediaType: 'photo' | 'video' | 'audio' = card.type === 'audio' ? 'audio' : 'photo';
-
-    // Media dosyası varsa Supabase Storage'a yükle
-    if (mediaUrl && mediaUrl.startsWith('file://')) {
-      try {
-        const fileName = `${user?.id}/${Date.now()}_${Math.random().toString(36).substring(7)}`;
-        const fileExt = mediaUrl.split('.').pop();
-        const filePath = `${fileName}.${fileExt}`;
-
-        // Dosyayı oku ve yükle
-        const response = await fetch(mediaUrl);
-        const blob = await response.blob();
-
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('memories')
-          .upload(filePath, blob, {
-            contentType: blob.type,
-          });
-
-        if (uploadError) throw uploadError;
-
-        // Public URL al
-        const { data: urlData } = supabase.storage.from('memories').getPublicUrl(filePath);
-        mediaUrl = urlData.publicUrl;
-      } catch (error) {
-        console.log('Error uploading media:', error);
-      }
-    }
-
-    const { data, error } = await supabase
-      .from('memories')
-      .insert({
-        profile_id: currentProfile.id,
-        title: card.correctLabel,
-        description: card.category || '',
-        media_url: mediaUrl,
-        media_type: mediaType,
-      })
-      .select()
-      .single();
-
-    if (error) throw error;
-
     const newCard: MemoryCard = {
-      id: data.id,
-      imageUri: mediaType === 'photo' ? mediaUrl || '' : '',
-      audioUri: mediaType === 'audio' ? mediaUrl : undefined,
-      correctLabel: data.title,
-      type: card.type,
-      category: data.description,
+      ...card,
+      id: Date.now().toString(),
     };
 
     const updatedProfile = {
@@ -247,51 +111,43 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
       cards: [...currentProfile.cards, newCard],
     };
 
+    const newProfiles = profiles.map((p) => (p.id === currentProfile.id ? updatedProfile : p));
+
+    await saveProfiles(newProfiles);
     setCurrentProfile(updatedProfile);
-    setProfiles(profiles.map((p) => (p.id === currentProfile.id ? updatedProfile : p)));
   };
 
   const deleteCard = async (cardId: string) => {
     if (!currentProfile) return;
-
-    const { error } = await supabase.from('memories').delete().eq('id', cardId);
-
-    if (error) throw error;
 
     const updatedProfile = {
       ...currentProfile,
       cards: currentProfile.cards.filter((c) => c.id !== cardId),
     };
 
+    const newProfiles = profiles.map((p) => (p.id === currentProfile.id ? updatedProfile : p));
+
+    await saveProfiles(newProfiles);
     setCurrentProfile(updatedProfile);
-    setProfiles(profiles.map((p) => (p.id === currentProfile.id ? updatedProfile : p)));
   };
 
   const updateCard = async (cardId: string, updates: Partial<MemoryCard>) => {
     if (!currentProfile) return;
-
-    const { error } = await supabase
-      .from('memories')
-      .update({
-        title: updates.correctLabel,
-        description: updates.category,
-      })
-      .eq('id', cardId);
-
-    if (error) throw error;
 
     const updatedProfile = {
       ...currentProfile,
       cards: currentProfile.cards.map((c) => (c.id === cardId ? { ...c, ...updates } : c)),
     };
 
+    const newProfiles = profiles.map((p) => (p.id === currentProfile.id ? updatedProfile : p));
+
+    await saveProfiles(newProfiles);
     setCurrentProfile(updatedProfile);
-    setProfiles(profiles.map((p) => (p.id === currentProfile.id ? updatedProfile : p)));
   };
 
   const logout = () => {
     setCurrentProfile(null);
-    setProfiles([]);
+    AsyncStorage.removeItem(CURRENT_PROFILE_KEY);
   };
 
   return (

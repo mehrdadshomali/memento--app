@@ -1,14 +1,16 @@
 /**
  * Memento - Routine Context
- * Günlük rutin ve hatırlatma yönetimi (Supabase)
+ * Günlük rutin ve hatırlatma yönetimi
  */
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
-import { supabase } from '../config/supabase';
-import { useAuth } from './AuthContext';
 import { useProfile } from './ProfileContext';
+
+const ROUTINES_KEY = 'memento_routines';
+const COMPLETIONS_KEY = 'memento_completions';
 
 export type RoutineCategory = 'medication' | 'meal' | 'exercise' | 'appointment' | 'hygiene' | 'social' | 'other';
 
@@ -63,88 +65,55 @@ interface RoutineContextType {
 const RoutineContext = createContext<RoutineContextType | undefined>(undefined);
 
 export function RoutineProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth();
   const { currentProfile } = useProfile();
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [completions, setCompletions] = useState<RoutineCompletion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    loadData();
     setupNotifications();
   }, []);
 
-  useEffect(() => {
-    if (user && currentProfile) {
-      loadData();
-      subscribeToChanges();
-    } else {
-      setRoutines([]);
-      setCompletions([]);
-      setIsLoading(false);
-    }
-  }, [user, currentProfile]);
-
-  const subscribeToChanges = () => {
-    if (!currentProfile) return;
-
-    const subscription = supabase
-      .channel('routine-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'routines',
-          filter: `profile_id=eq.${currentProfile.id}`,
-        },
-        () => {
-          loadData();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  };
-
   const loadData = async () => {
-    if (!currentProfile) return;
-
     try {
-      // Routines'leri yükle
-      const { data: routinesData, error: routinesError } = await supabase
-        .from('routines')
-        .select('*')
-        .eq('profile_id', currentProfile.id)
-        .order('time', { ascending: true });
-
-      if (routinesError) throw routinesError;
+      const [routinesData, completionsData] = await Promise.all([
+        AsyncStorage.getItem(ROUTINES_KEY),
+        AsyncStorage.getItem(COMPLETIONS_KEY),
+      ]);
 
       if (routinesData) {
-        const loadedRoutines: Routine[] = routinesData.map((r) => ({
-          id: r.id,
-          title: r.title,
-          description: '',
-          category: 'other' as RoutineCategory,
-          time: r.time,
-          days: r.days.map((d: string) => parseInt(d)),
-          isEnabled: r.reminder_enabled,
-          icon: '📌',
-          color: '#90A4AE',
-          createdAt: r.created_at,
-        }));
-
-        setRoutines(loadedRoutines);
+        setRoutines(JSON.parse(routinesData));
       }
-
-      // Completions için local storage kullan (geçici)
-      // TODO: Completions tablosu eklenebilir
-      setCompletions([]);
+      if (completionsData) {
+        const allCompletions = JSON.parse(completionsData) as RoutineCompletion[];
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        const recentCompletions = allCompletions.filter((c) => new Date(c.date) >= thirtyDaysAgo);
+        setCompletions(recentCompletions);
+      }
     } catch (error) {
       console.log('Error loading routines:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const saveRoutines = async (newRoutines: Routine[]) => {
+    try {
+      await AsyncStorage.setItem(ROUTINES_KEY, JSON.stringify(newRoutines));
+      setRoutines(newRoutines);
+    } catch (error) {
+      console.log('Error saving routines:', error);
+    }
+  };
+
+  const saveCompletions = async (newCompletions: RoutineCompletion[]) => {
+    try {
+      await AsyncStorage.setItem(COMPLETIONS_KEY, JSON.stringify(newCompletions));
+      setCompletions(newCompletions);
+    } catch (error) {
+      console.log('Error saving completions:', error);
     }
   };
 
@@ -210,50 +179,23 @@ export function RoutineProvider({ children }: { children: ReactNode }) {
   };
 
   const addRoutine = async (routineData: Omit<Routine, 'id' | 'createdAt' | 'notificationId'>) => {
-    if (!currentProfile) return;
-
-    const { data, error } = await supabase
-      .from('routines')
-      .insert({
-        profile_id: currentProfile.id,
-        title: routineData.title,
-        time: routineData.time,
-        days: routineData.days.map(String),
-        reminder_enabled: routineData.isEnabled,
-      })
-      .select()
-      .single();
-
-    if (error) throw error;
-
     const newRoutine: Routine = {
       ...routineData,
-      id: data.id,
-      createdAt: data.created_at,
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
     };
 
     // Bildirim planla
     const notificationId = await scheduleNotification(newRoutine);
     newRoutine.notificationId = notificationId;
 
-    setRoutines([...routines, newRoutine]);
+    const newRoutines = [...routines, newRoutine];
+    await saveRoutines(newRoutines);
   };
 
   const updateRoutine = async (id: string, updates: Partial<Routine>) => {
     const routine = routines.find((r) => r.id === id);
     if (!routine) return;
-
-    const { error } = await supabase
-      .from('routines')
-      .update({
-        title: updates.title,
-        time: updates.time,
-        days: updates.days?.map(String),
-        reminder_enabled: updates.isEnabled,
-      })
-      .eq('id', id);
-
-    if (error) throw error;
 
     const updatedRoutine = { ...routine, ...updates };
 
@@ -262,7 +204,8 @@ export function RoutineProvider({ children }: { children: ReactNode }) {
     const notificationId = await scheduleNotification(updatedRoutine);
     updatedRoutine.notificationId = notificationId;
 
-    setRoutines(routines.map((r) => (r.id === id ? updatedRoutine : r)));
+    const newRoutines = routines.map((r) => (r.id === id ? updatedRoutine : r));
+    await saveRoutines(newRoutines);
   };
 
   const deleteRoutine = async (id: string) => {
@@ -271,11 +214,8 @@ export function RoutineProvider({ children }: { children: ReactNode }) {
       await cancelNotification(routine.notificationId);
     }
 
-    const { error } = await supabase.from('routines').delete().eq('id', id);
-
-    if (error) throw error;
-
-    setRoutines(routines.filter((r) => r.id !== id));
+    const newRoutines = routines.filter((r) => r.id !== id);
+    await saveRoutines(newRoutines);
   };
 
   const toggleRoutine = async (id: string) => {
@@ -288,7 +228,6 @@ export function RoutineProvider({ children }: { children: ReactNode }) {
   const completeRoutine = async (id: string) => {
     const today = new Date().toISOString().split('T')[0];
 
-    // Bugün zaten tamamlanmış mı kontrol et
     const alreadyCompleted = completions.some((c) => c.routineId === id && c.date === today);
 
     if (alreadyCompleted) return;
@@ -299,8 +238,8 @@ export function RoutineProvider({ children }: { children: ReactNode }) {
       date: today,
     };
 
-    // TODO: Completions tablosu eklendiğinde Supabase'e kaydet
-    setCompletions([...completions, newCompletion]);
+    const newCompletions = [...completions, newCompletion];
+    await saveCompletions(newCompletions);
   };
 
   const isCompletedToday = (id: string): boolean => {
