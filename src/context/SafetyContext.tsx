@@ -1,17 +1,15 @@
 /**
  * Memento - Safety Context
- * Ev konumu, bildirimler ve güvenlik yönetimi
+ * Ev konumu, bildirimler ve güvenlik yönetimi (Supabase)
  */
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
-import * as TaskManager from 'expo-task-manager';
 import { Alert, Platform } from 'react-native';
-
-const LOCATION_TASK_NAME = 'memento-location-task';
-const SAFETY_DATA_KEY = 'memento_safety_data';
+import { supabase } from '../config/supabase';
+import { useAuth } from './AuthContext';
+import { useProfile } from './ProfileContext';
 
 export interface HomeLocation {
   latitude: number;
@@ -77,6 +75,8 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
 }
 
 export function SafetyProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
+  const { currentProfile } = useProfile();
   const [safetyProfile, setSafetyProfile] = useState<SafetyProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [currentLocation, setCurrentLocation] = useState<Location.LocationObject | null>(null);
@@ -85,15 +85,23 @@ export function SafetyProvider({ children }: { children: ReactNode }) {
   const notificationIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    loadSafetyData();
     setupNotifications();
-    
+
     return () => {
       if (notificationIntervalRef.current) {
         clearInterval(notificationIntervalRef.current);
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (user && currentProfile) {
+      loadSafetyData();
+    } else {
+      setSafetyProfile(null);
+      setIsLoading(false);
+    }
+  }, [user, currentProfile]);
 
   // Konum değiştiğinde mesafe hesapla
   useEffect(() => {
@@ -110,29 +118,72 @@ export function SafetyProvider({ children }: { children: ReactNode }) {
   }, [currentLocation, safetyProfile?.homeLocation]);
 
   const loadSafetyData = async () => {
+    if (!currentProfile) return;
+
     try {
-      const data = await AsyncStorage.getItem(SAFETY_DATA_KEY);
-      if (data) {
-        setSafetyProfile(JSON.parse(data));
-      } else {
-        // Varsayılan profil
-        setSafetyProfile({
-          fullName: '',
-          homeLocation: null,
-          isMonitoringEnabled: false,
-          reminderIntervalMinutes: 15,
-        });
-      }
+      // Profil bilgilerini al
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', currentProfile.id)
+        .single();
+
+      if (profileError) throw profileError;
+
+      // Son konum bilgisini al
+      const { data: locationData } = await supabase
+        .from('locations')
+        .select('*')
+        .eq('profile_id', currentProfile.id)
+        .order('timestamp', { ascending: false })
+        .limit(1)
+        .single();
+
+      const homeLocation = profileData.avatar_url
+        ? JSON.parse(profileData.avatar_url)
+        : null;
+
+      setSafetyProfile({
+        fullName: profileData.name,
+        phoneNumber: undefined,
+        emergencyContact: undefined,
+        homeLocation,
+        isMonitoringEnabled: false,
+        reminderIntervalMinutes: 15,
+        lastKnownLocation: locationData
+          ? {
+              latitude: parseFloat(locationData.latitude),
+              longitude: parseFloat(locationData.longitude),
+              timestamp: locationData.timestamp,
+            }
+          : undefined,
+      });
     } catch (error) {
       console.log('Error loading safety data:', error);
+      // Varsayılan profil
+      setSafetyProfile({
+        fullName: currentProfile.name,
+        homeLocation: null,
+        isMonitoringEnabled: false,
+        reminderIntervalMinutes: 15,
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
   const saveSafetyData = async (data: SafetyProfile) => {
+    if (!currentProfile) return;
+
     try {
-      await AsyncStorage.setItem(SAFETY_DATA_KEY, JSON.stringify(data));
+      // Home location'ı avatar_url alanında sakla (geçici çözüm)
+      await supabase
+        .from('profiles')
+        .update({
+          avatar_url: data.homeLocation ? JSON.stringify(data.homeLocation) : null,
+        })
+        .eq('id', currentProfile.id);
+
       setSafetyProfile(data);
     } catch (error) {
       console.log('Error saving safety data:', error);
@@ -175,6 +226,18 @@ export function SafetyProvider({ children }: { children: ReactNode }) {
         accuracy: Location.Accuracy.High,
       });
       setCurrentLocation(location);
+
+      // Konumu Supabase'e kaydet
+      if (currentProfile) {
+        await supabase.from('locations').insert({
+          profile_id: currentProfile.id,
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          timestamp: new Date().toISOString(),
+          accuracy: location.coords.accuracy,
+        });
+      }
+
       return location;
     } catch (error) {
       console.log('Error getting location:', error);
