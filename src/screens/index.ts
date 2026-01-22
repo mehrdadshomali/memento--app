@@ -1,4 +1,3 @@
-export { default as AuthScreen } from './AuthScreen';
 export { HomeScreen } from './HomeScreen';
 export { GameScreen } from './GameScreen';
 export { ProfileSelectScreen } from './ProfileSelectScreen';
