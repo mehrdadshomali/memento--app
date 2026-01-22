@@ -14,6 +14,7 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS, FONTS, SPACING, BORDER_RADIUS, SHADOWS } from '../constants/theme';
 import { useLanguage } from '../i18n';
 import { useProfile } from '../context/ProfileContext';
@@ -93,7 +94,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
             style={styles.safetyBanner}
             onPress={getDirectionsToHome}
           >
-            <Text style={styles.safetyIcon}>🏠</Text>
+            <Ionicons name="home" size={28} color="#FF9800" style={{ marginRight: SPACING.md }} />
             <View style={styles.safetyInfo}>
               <Text style={styles.safetyTitle}>Evden Uzaktasınız</Text>
               <Text style={styles.safetySubtitle}>
@@ -114,7 +115,10 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
             onPress={() => navigation.navigate('Routine')}
           >
             <View style={styles.routineHeader}>
-              <Text style={styles.routineTitle}>📋 Bugünün Rutinleri</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Ionicons name="list" size={20} color={COLORS.primary} style={{ marginRight: SPACING.sm }} />
+                <Text style={styles.routineTitle}>Bugünün Rutinleri</Text>
+              </View>
               <Text style={styles.routineCount}>{completedRoutines}/{totalRoutines}</Text>
             </View>
             <View style={styles.routineProgressBar}>
@@ -129,7 +133,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
               <View style={styles.nextRoutine}>
                 <Text style={styles.nextRoutineLabel}>Sıradaki:</Text>
                 <Text style={styles.nextRoutineText}>
-                  {nextRoutine.icon} {nextRoutine.title} - {nextRoutine.time}
+                  {nextRoutine.title} - {nextRoutine.time}
                 </Text>
               </View>
             )}
@@ -150,7 +154,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
             onPress={handleVisualGame}
           >
             <View style={styles.iconContainer}>
-              <Text style={styles.buttonIcon}>◐</Text>
+              <Ionicons name="images-outline" size={32} color={COLORS.primary} />
             </View>
             <View style={styles.buttonTextContainer}>
               <Text style={styles.buttonTitle}>{t.whoIsThis}</Text>
@@ -158,7 +162,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
                 {t.familyAlbum} ({visualCards.length})
               </Text>
             </View>
-            <Text style={styles.arrow}>→</Text>
+            <Ionicons name="chevron-forward" size={24} color={COLORS.textLight} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -166,7 +170,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
             onPress={handleAudioGame}
           >
             <View style={styles.iconContainer}>
-              <Text style={styles.buttonIcon}>◎</Text>
+              <Ionicons name="volume-high-outline" size={32} color={COLORS.primary} />
             </View>
             <View style={styles.buttonTextContainer}>
               <Text style={styles.buttonTitle}>{t.whatSound}</Text>
@@ -174,7 +178,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
                 {t.soundMatch} ({audioCards.length})
               </Text>
             </View>
-            <Text style={styles.arrow}>→</Text>
+            <Ionicons name="chevron-forward" size={24} color={COLORS.textLight} />
           </TouchableOpacity>
 
           {/* Routine Button */}
@@ -182,7 +186,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
             style={styles.featureButton}
             onPress={() => navigation.navigate('Routine')}
           >
-            <Text style={styles.featureButtonIcon}>⏰</Text>
+            <Ionicons name="time-outline" size={20} color={COLORS.textSecondary} style={{ marginRight: SPACING.sm }} />
             <Text style={styles.featureButtonText}>Günlük Rutin</Text>
             {totalRoutines > 0 && (
               <View style={styles.badge}>
@@ -196,7 +200,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
             style={styles.featureButton}
             onPress={() => navigation.navigate('Safety')}
           >
-            <Text style={styles.featureButtonIcon}>🏠</Text>
+            <Ionicons name="shield-checkmark-outline" size={20} color={COLORS.textSecondary} style={{ marginRight: SPACING.sm }} />
             <Text style={styles.featureButtonText}>
               {safetyProfile?.homeLocation ? 'Güvenlik' : 'Ev Konumu Ayarla'}
             </Text>
@@ -291,10 +295,6 @@ const styles = StyleSheet.create({
     borderRadius: BORDER_RADIUS.lg,
     borderWidth: 1,
     borderColor: '#FFCC80',
-  },
-  safetyIcon: {
-    fontSize: 28,
-    marginRight: SPACING.md,
   },
   safetyInfo: {
     flex: 1,
@@ -421,10 +421,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: SPACING.md,
   },
-  buttonIcon: {
-    fontSize: 28,
-    color: COLORS.primary,
-  },
   buttonTextContainer: {
     flex: 1,
   },
@@ -439,10 +435,6 @@ const styles = StyleSheet.create({
     fontWeight: FONTS.weights.light,
     color: COLORS.textMuted,
   },
-  arrow: {
-    fontSize: FONTS.sizes.lg,
-    color: COLORS.textLight,
-  },
   featureButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -453,10 +445,6 @@ const styles = StyleSheet.create({
     borderRadius: BORDER_RADIUS.md,
     borderWidth: 1,
     borderColor: COLORS.borderLight,
-  },
-  featureButtonIcon: {
-    fontSize: 20,
-    marginRight: SPACING.sm,
   },
   featureButtonText: {
     fontSize: FONTS.sizes.sm,

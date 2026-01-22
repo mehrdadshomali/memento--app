@@ -16,13 +16,13 @@ export type RoutineCategory = 'medication' | 'meal' | 'exercise' | 'appointment'
 
 // Kategori ayarları
 export const ROUTINE_CATEGORIES: Record<RoutineCategory, { icon: string; color: string; label: string; labelTr: string }> = {
-  medication: { icon: '💊', color: '#E57373', label: 'Medication', labelTr: 'İlaç' },
-  meal: { icon: '🍽️', color: '#FFB74D', label: 'Meal', labelTr: 'Yemek' },
-  exercise: { icon: '🚶', color: '#81C784', label: 'Exercise', labelTr: 'Egzersiz' },
-  appointment: { icon: '📅', color: '#64B5F6', label: 'Appointment', labelTr: 'Randevu' },
-  hygiene: { icon: '🚿', color: '#9575CD', label: 'Hygiene', labelTr: 'Hijyen' },
-  social: { icon: '👥', color: '#F06292', label: 'Social', labelTr: 'Sosyal' },
-  other: { icon: '📌', color: '#90A4AE', label: 'Other', labelTr: 'Diğer' },
+  medication: { icon: 'medical', color: '#E57373', label: 'Medication', labelTr: 'İlaç' },
+  meal: { icon: 'restaurant', color: '#FFB74D', label: 'Meal', labelTr: 'Yemek' },
+  exercise: { icon: 'walk', color: '#81C784', label: 'Exercise', labelTr: 'Egzersiz' },
+  appointment: { icon: 'calendar', color: '#64B5F6', label: 'Appointment', labelTr: 'Randevu' },
+  hygiene: { icon: 'water', color: '#9575CD', label: 'Hygiene', labelTr: 'Hijyen' },
+  social: { icon: 'people', color: '#F06292', label: 'Social', labelTr: 'Sosyal' },
+  other: { icon: 'bookmark', color: '#90A4AE', label: 'Other', labelTr: 'Diğer' },
 };
 
 export const DAY_NAMES = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
@@ -148,7 +148,7 @@ export function RoutineProvider({ children }: { children: ReactNode }) {
 
       const notificationId = await Notifications.scheduleNotificationAsync({
         content: {
-          title: `${categoryInfo.icon} ${routine.title}`,
+          title: `${routine.title}`,
           body: routine.description || 'Hatırlatma zamanı!',
           data: { routineId: routine.id },
           sound: true,

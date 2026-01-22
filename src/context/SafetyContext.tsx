@@ -208,16 +208,16 @@ export function SafetyProvider({ children }: { children: ReactNode }) {
     if (!safetyProfile?.homeLocation || !safetyProfile.fullName) return;
 
     const messages = [
-      `Merhaba ${safetyProfile.fullName}! 🏠\n\nEvinizin adresi:\n${safetyProfile.homeLocation.address}\n\nEve dönmek için Memento'yu açın.`,
-      `${safetyProfile.fullName}, evinizi hatırlıyor musunuz? 💙\n\n${safetyProfile.homeLocation.name}\n${safetyProfile.homeLocation.address}`,
-      `Güvendesiniz ${safetyProfile.fullName}! 🌟\n\nEviniz: ${safetyProfile.homeLocation.address}\n\nYardım için Memento'yu açın.`,
+      `Merhaba ${safetyProfile.fullName}!\n\nEvinizin adresi:\n${safetyProfile.homeLocation.address}\n\nEve dönmek için Memento'yu açın.`,
+      `${safetyProfile.fullName}, evinizi hatırlıyor musunuz?\n\n${safetyProfile.homeLocation.name}\n${safetyProfile.homeLocation.address}`,
+      `Güvendesiniz ${safetyProfile.fullName}!\n\nEviniz: ${safetyProfile.homeLocation.address}\n\nYardım için Memento'yu açın.`,
     ];
 
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
 
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: '🏠 Ev Hatırlatması',
+        title: 'Ev Hatırlatması',
         body: randomMessage,
         data: { type: 'home-reminder' },
         sound: true,
