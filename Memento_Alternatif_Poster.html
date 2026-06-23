@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Memento - Görsel Ağırlıklı A3 Poster (Alternatif Düzen)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
+
+    @page {
+      size: 297mm 420mm; /* A3 Dikey */
+      margin: 0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 297mm;
+      height: 420mm;
+      font-family: 'Inter', sans-serif;
+      color: #2b3331;
+      background: #f4f6f5; 
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ==================== HEADER ==================== */
+    .header-wrapper {
+      background: #2a4d45;
+      color: white;
+      padding: 11mm 14mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+    }
+    .header-left { flex: 1; }
+    .uni-info {
+      font-size: 11pt;
+      color: #a8c1ba;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 3mm;
+      display: flex;
+      align-items: center;
+      gap: 3mm;
+    }
+    .logo-circle {
+      width: 44px; height: 44px;
+      background: white; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #2a4d45; font-weight: bold; font-size: 9pt; text-align: center;
+      line-height: 1;
+    }
+    .poster-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 36pt;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 2mm;
+    }
+    .poster-title span { color: #e8c78a; }
+    .poster-subtitle {
+      font-size: 12pt;
+      color: #d1e0dc;
+      font-style: italic;
+      max-width: 90%;
+    }
+    .qr-box { width: 38mm; text-align: center; }
+    .qr-code {
+      width: 30mm; height: 30mm;
+      background: white; padding: 2mm; border-radius: 4px;
+      margin: 0 auto 2mm auto; border: 2px dashed #a8c1ba;
+      background-image: url('assets/expo_qr.png');
+      background-size: cover;
+      background-position: center;
+    }
+    .qr-box p { font-size: 8pt; color: #a8c1ba; }
+
+    /* ==================== AUTHOR BANNER ==================== */
+    .author-banner {
+      background: #1a1f1e; color: #8fa39e;
+      padding: 3.5mm 14mm; font-size: 10pt;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .author-banner b { color: white; margin-right: 2mm; }
+    .author-banner span { margin-right: 5mm; }
+
+    /* ==================== STATS ROW ==================== */
+    .stats-row { display: flex; padding: 7mm 14mm; gap: 5mm; }
+    .stat-box {
+      flex: 1; background: white; border-radius: 8px; padding: 4.5mm;
+      text-align: center; border: 1px solid #e0e5e3;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.03);
+    }
+    .stat-num { font-size: 22pt; font-weight: 800; color: #a67c52; margin-bottom: 1mm; }
+    .stat-label { font-size: 8pt; color: #66736f; text-transform: uppercase; font-weight: 600; }
+
+    /* ==================== MAIN CONTENT GRID ==================== */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr 1fr;
+      gap: 6mm;
+      padding: 0 14mm 8mm 14mm;
+      flex: 1;
+    }
+    /* Burada gap ile dolduruyoruz, space-between yok ki gereksiz büyük boşluklar olmasın. 
+       Bunun yerine kartlar yüksekliğini içeriğe göre alacak. */
+    .col { display: flex; flex-direction: column; gap: 6mm; height: 100%; }
+
+    /* ==================== CARDS ==================== */
+    .card {
+      background: white; border-radius: 10px; border: 1px solid #d8e0dd;
+      overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    }
+    .card-header {
+      padding: 3.5mm 6mm; color: white; font-weight: 700; font-size: 12pt;
+      display: flex; align-items: center; gap: 3mm;
+    }
+    .bg-green { background: #3b5b55; }
+    .bg-brown { background: #8b6b4e; }
+    .bg-teal  { background: #4a7c82; }
+
+    .card-body {
+      padding: 5mm 6mm; font-size: 9.5pt; line-height: 1.55; color: #3a4542;
+    }
+    .card-body p { margin-bottom: 2.5mm; text-align: justify; }
+    .card-body p:last-child { margin-bottom: 0; }
+    .card-body b { color: #2a4d45; font-weight: 700; }
+
+    /* ==================== LISTS & STEPS ==================== */
+    .step-list { list-style: none; }
+    .step-list li { display: flex; align-items: flex-start; margin-bottom: 3.5mm; }
+    .step-list li:last-child { margin-bottom: 0; }
+    .step-num {
+      width: 18px; height: 18px; background: #2a4d45; color: white; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8pt; font-weight: bold; margin-right: 3mm; flex-shrink: 0; margin-top: 1.5px;
+    }
+
+    /* ==================== ARCHITECTURE & TABLES ==================== */
+    .arch-box {
+      background: #f4f7f6; border: 1px solid #dce3e0; border-radius: 6px;
+      padding: 3.5mm; text-align: center; margin-bottom: 2.5mm; position: relative;
+    }
+    .arch-box::after {
+      content: '▼'; position: absolute; bottom: -4mm; left: 50%; transform: translateX(-50%);
+      color: #a8c1ba; font-size: 9pt; z-index: 1;
+    }
+    .arch-box:last-child::after { display: none; margin-bottom: 0; }
+    .arch-title { font-weight: 800; font-size: 10pt; color: #2a4d45; }
+    .arch-sub { font-size: 8pt; color: #66736f; margin-top: 2px; }
+
+    .tech-table { width: 100%; border-collapse: collapse; font-size: 9pt; color: #4a5451; }
+    .tech-table td { padding: 2.5mm 0; border-bottom: 1px solid #e0e5e3; }
+    .tech-table tr:last-child td { border-bottom: none; }
+
+    /* ==================== ALGORITHMS & CODE ==================== */
+    .code-box {
+      background: #fdfaf5; border: 1px solid #eaddca; border-radius: 6px;
+      padding: 3.5mm; font-family: 'Courier New', monospace; font-size: 8.5pt;
+      color: #5c4033; margin: 2mm 0; white-space: pre-wrap; font-weight: 600;
+    }
+    .algo-title { font-weight: 700; font-size: 9.5pt; color: #8b6b4e; border-bottom: 1px solid #eaddca; padding-bottom: 1.5mm; margin-bottom: 2mm; }
+
+    /* ==================== VISUALS (MOCKUPS) ==================== */
+    .mockup-container {
+      display: flex; flex-direction: column; background: white; border-radius: 10px; 
+      border: 1px solid #d8e0dd; box-shadow: 0 6px 15px rgba(0,0,0,0.04); padding: 6mm;
+      height: 100%; /* Bu kolon ekranı tam doldursun */
+    }
+    .mockup-header {
+      font-weight: 800; font-size: 14pt; color: #2a4d45; text-align: center; 
+      margin-bottom: 5mm; border-bottom: 2px solid #e0e5e3; padding-bottom: 3mm;
+    }
+    .mockup-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4mm; flex: 1;
+    }
+    .mockup-frame {
+      position: relative; height: 100%; min-height: 190mm;
+    }
+    .mockup-frame img {
+      width: 100%; height: 100%; object-fit: contain;
+      border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); border: 1px solid #e0e5e3; background: #fff;
+    }
+    .mockup-label {
+      position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
+      background: rgba(255,255,255,0.95); padding: 6px 10px; border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1); font-size: 9.5pt; font-weight: 700; color: #2a4d45;
+      text-align: center; width: 85%; white-space: nowrap;
+    }
+
+    .module-details {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4mm; margin-top: 5mm;
+    }
+    .mod-box {
+      background: #f4f7f6; padding: 4mm; border-radius: 8px; border: 1px solid #dce3e0;
+      text-align: center;
+    }
+    .mod-title { font-size: 9pt; font-weight: 800; color: #4a7c82; margin-bottom: 2mm; }
+    .mod-text { font-size: 8pt; color: #66736f; }
+
+    /* ==================== FOOTER ==================== */
+    .footer {
+      background: #2a4d45; color: #a8c1ba; text-align: center;
+      padding: 5mm; font-size: 9pt; margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-wrapper">
+    <div class="header-left">
+      <div class="uni-info">
+        <div class="logo-circle">NKÜ</div>
+        T.C. Tekirdağ Namık Kemal Üniversitesi · Çorlu Mühendislik Fakültesi · Bilgisayar Mühendisliği Bölümü
+      </div>
+      <div class="poster-title">MEMENTO: Alzheimer Hastaları İçin Terapötik<br><span>Hafıza Egzersiz</span> Mobil Uygulaması</div>
+      <div class="poster-subtitle">Bilişsel rehabilitasyon, GPS tabanlı konum güvenliği ve günlük rutin yönetimini birleştiren çevrimdışı-öncelikli bir mHealth ekosistemi</div>
+    </div>
+    <div class="qr-box">
+      <div class="qr-code"></div>
+      <p>PROJE DEPOSU<br>github.com/mehrdadshomali</p>
+    </div>
+  </div>
+
+  <div class="author-banner">
+    <div>
+      <span><b>Mehrdad SHOMALI</b> · 2210656637</span>
+      <span><b>Kerim Can GÜZEL</b> · 2220656047</span>
+      <span><b>Efekan ÇETİN</b> · 222656034</span>
+    </div>
+    <div>Danışman: <b>Dr. Öğr. Üyesi Erkan ÖZHAN</b> · Lisans Bitirme Projesi · Haziran 2026</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-num">14+</div><div class="stat-label">Mobil Ekran / Modül</div></div>
+    <div class="stat-box"><div class="stat-num">2</div><div class="stat-label">Çapraz Platform (iOS · Android)</div></div>
+    <div class="stat-box"><div class="stat-num">5</div><div class="stat-label">Context Provider Modülü</div></div>
+    <div class="stat-box"><div class="stat-num">100%</div><div class="stat-label">Çevrimdışı (Offline-first) İşlevsellik</div></div>
+  </div>
+
+  <div class="main-grid">
+    
+    <!-- SOL KOLON -->
+    <div class="col">
+      <div class="card">
+        <div class="card-header bg-green">📋 Özet</div>
+        <div class="card-body">
+          <p>Memento; <b>Alzheimer ve demans hastalarının</b> bilişsel sağlığını desteklemek, güvenliğini ve günlük rutinlerini yönetmek üzere geliştirilen terapötik bir <b>mobil sağlık (mHealth)</b> uygulamasıdır.</p>
+          <p>React Native & Expo ile çapraz platform geliştirilmiş; AsyncStorage (yerel) ve Supabase (bulut) entegrasyonu ile tam <b>çevrimdışı-öncelikli (offline-first)</b> çalışacak şekilde tasarlanmıştır.</p>
+          <p>Hafıza egzersizleri, GPS güvenliği ve rutin yönetimini <b>yaşlı dostu dev butonlar</b> ve <b>WCAG AA</b> erişilebilirlik standartları ile tek bir "hepsi bir arada" ekosistemde sunar.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header bg-brown">🎯 Giriş ve Motivasyon</div>
+        <div class="card-body">
+          <ul class="step-list">
+            <li><div class="step-num">•</div><div><b>Problem:</b> Hafıza zayıflaması, rutinlerin unutulması ve evden uzaklaşıp kaybolma (wandering) riski.</div></li>
+            <li><div class="step-num">•</div><div><b>Eksiklik:</b> Mevcut uygulamalar yaşlı kullanıcı için fazla karmaşık ve tek dikeyde kalmış (sadece oyun veya sadece harita).</div></li>
+            <li><div class="step-num">•</div><div><b>Amaç:</b> Bilişsel gelişim, güvenlik ve psikolojik desteği <b>aynı platformda, stresten uzak</b> birleştirmek.</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header bg-teal">⚙️ Önerilen Yöntem · 4 Adım</div>
+        <div class="card-body">
+          <ul class="step-list">
+            <li><div class="step-num">1</div><div><b>Kayıt:</b> Fotoğraf, ses ve rutinler Supabase'e tanımlanır.</div></li>
+            <li><div class="step-num">2</div><div><b>Takip:</b> Cihaz kilitliyken bile Expo Location ile mesafe ölçülür.</div></li>
+            <li><div class="step-num">3</div><div><b>Rehabilitasyon:</b> Dinamik eşleştirme egzersizleri sunulur.</div></li>
+            <li><div class="step-num">4</div><div><b>Analiz:</b> Egzersiz istatistikleri bakıcı ekranına yansıtılır.</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" style="flex: 1;">
+        <div class="card-header bg-green">💻 Teknoloji Yığını</div>
+        <div class="card-body">
+          <table class="tech-table">
+            <tr><td style="font-weight: 700; width: 38%;">React Native</td><td>0.81.5 (Çapraz platform)</td></tr>
+            <tr><td style="font-weight: 700;">Expo SDK</td><td>54.0.31 (Donanım / Derleme)</td></tr>
+            <tr><td style="font-weight: 700;">TypeScript</td><td>5.9.2 (Statik tip güvenliği)</td></tr>
+            <tr><td style="font-weight: 700;">Supabase-js</td><td>2.91.0 (Bulut DB / Medya Storage)</td></tr>
+            <tr><td style="font-weight: 700;">AsyncStorage</td><td>Yerel önbellek / Offline Mimari</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORTA KOLON (GÖRSELLER) -->
+    <div class="col">
+      <div class="mockup-container">
+        <div class="mockup-header">📱 Uygulama Arayüzü ve Ekranlar</div>
+        <div class="mockup-grid">
+          <div class="mockup-frame">
+            <img src="assets/ss1.png" alt="Sesli Mesajlar">
+            <div class="mockup-label">Sesli Mesajlar</div>
+          </div>
+          <div class="mockup-frame">
+            <img src="assets/ss2.png" alt="Güvenlik">
+            <div class="mockup-label">Güvenlik (GPS)</div>
+          </div>
+          <div class="mockup-frame">
+            <img src="assets/ss3.png" alt="Günlük Rutin">
+            <div class="mockup-label">Günlük Rutin</div>
+          </div>
+        </div>
+
+        <div class="module-details">
+          <div class="mod-box">
+            <div class="mod-title">Aile Albümü & Ses</div>
+            <div class="mod-text">Yüksek kaliteli ses kayıtlarıyla duygusal bağ hissi.</div>
+          </div>
+          <div class="mod-box">
+            <div class="mod-title">Geofence (Çit)</div>
+            <div class="mod-text">100m sınırı aşıldığında bakıcıya anında SOS.</div>
+          </div>
+          <div class="mod-box">
+            <div class="mod-title">Rutin Takibi</div>
+            <div class="mod-text">İlaç/yemek hatırlatıcıları ile yaşam döngüsü.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SAĞ KOLON -->
+    <div class="col">
+      <div class="card">
+        <div class="card-header bg-teal">🏛️ Sistem Mimarisi</div>
+        <div class="card-body">
+          <div class="arch-box">
+            <div class="arch-title">Sunum Katmanı • View</div>
+            <div class="arch-sub">React Native Components • Yaşlı Dostu UI</div>
+          </div>
+          <div class="arch-box">
+            <div class="arch-title">İş Mantığı • Controller</div>
+            <div class="arch-sub">React Context API (Global State)</div>
+          </div>
+          <div class="arch-box">
+            <div class="arch-title">Veri Katmanı • Model</div>
+            <div class="arch-sub">Supabase (PostgreSQL) • AsyncStorage</div>
+          </div>
+          <p style="margin-top:2.5mm; font-size:8.5pt; text-align:center;"><b>Mimari Deseni:</b> Bileşen tabanlı üç katmanlı yapı.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header bg-brown">📐 Çekirdek Algoritmalar</div>
+        <div class="card-body">
+          <div class="algo-title">Fisher-Yates Shuffle — O(N)</div>
+          <div class="code-box">for i = N-1 → 1:
+  j = rand(0, i)
+  swap( a[i], a[j] )</div>
+          <p style="font-size:8.5pt; margin-bottom: 3.5mm;">Oyunların ezberlenmesini önlemek için rastgele (unbiased) sıralar.</p>
+
+          <div class="algo-title">Haversine Formülü</div>
+          <div class="code-box">d = 2R · arcsin( √( sin²(Δφ/2) + ... ) )</div>
+          <p style="font-size:8.5pt;">R = 6.371.000m. <b>100 m</b> güvenli çember sınırını hesaplar.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header bg-teal">📚 İlgili Çalışmalar & Literatür</div>
+        <div class="card-body">
+          <ul class="step-list">
+            <li><div class="step-num" style="background:#4a7c82">•</div><div><b>Spector & Woods:</b> Bilişsel Stimülasyon Terapisi (CST).</div></li>
+            <li><div class="step-num" style="background:#4a7c82">•</div><div><b>Altus vd. (2000):</b> GPS takibi, kaybolmayı (wandering) önler.</div></li>
+            <li><div class="step-num" style="background:#8b6b4e;">•</div><div><b>Araştırma Boşluğu:</b> Tüm süreçleri birleştiren <b>hepsi-bir-arada</b> ekosistem.</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" style="flex: 1;">
+        <div class="card-header bg-green">✅ Sonuç ve Gelecek Çalışmalar</div>
+        <div class="card-body">
+          <p>Bilişsel gelişim, güvenlik ve psikolojiyi tek platformda birleştiren çevrimdışı <b>dijital asistan</b> başarıyla geliştirildi.</p>
+          <ul class="step-list" style="margin-top:3mm;">
+            <li><div class="step-num" style="width:14px; height:14px; font-size:7pt; margin-top:1px; background:#2a4d45"></div><div>Akıllı saat (nabız/düşme algılama) entegrasyonu.</div></li>
+            <li><div class="step-num" style="width:14px; height:14px; font-size:7pt; margin-top:1px; background:#2a4d45"></div><div>Makine öğrenmesi ile duygu durumu analizi.</div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    ✉ mehrdadshomali@nku.edu.tr &nbsp;|&nbsp; 🔗 github.com/mehrdadshomali/memento--app &nbsp;|&nbsp; Memento · Lisans Bitirme Projesi 2026
+  </div>
+
+</body>
+</html>

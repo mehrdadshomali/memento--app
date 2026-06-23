@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Memento - A3 Poster Sunum</title>
+<style>
+  @page {
+    size: 297mm 420mm; /* A3 Dikey (Portrait) */
+    margin: 0;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 297mm;
+    height: 420mm;
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: #2c2420;
+    background: #f5f0ea;
+    overflow: hidden;
+  }
+
+  .poster {
+    width: 297mm;
+    height: 420mm;
+    padding: 7mm;
+    display: flex;
+    flex-direction: column;
+    gap: 5mm;
+  }
+
+  /* ==================== HEADER ==================== */
+  .header {
+    background: #3b2f2a;
+    border-radius: 12px;
+    padding: 9mm 10mm 8mm 10mm;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    top: -60px; right: -40px;
+    width: 250px; height: 250px;
+    background: radial-gradient(circle, rgba(176,125,79,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5mm;
+  }
+  .header-top-left {
+    display: flex;
+    align-items: center;
+    gap: 4mm;
+  }
+  .uni-logo {
+    width: 38px;
+    height: 38px;
+    border: 2px solid rgba(255,255,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .uni-logo svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: rgba(255,255,255,0.6);
+    stroke-width: 1.5;
+  }
+  .uni-text {
+    color: rgba(255,255,255,0.85);
+    font-size: 8pt;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .uni-text span {
+    display: block;
+    font-size: 7pt;
+    color: rgba(255,255,255,0.5);
+    font-weight: 400;
+  }
+  .header-badges {
+    display: flex;
+    gap: 3mm;
+  }
+  .h-badge {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    padding: 2mm 4mm;
+    font-size: 6.5pt;
+    color: rgba(255,255,255,0.65);
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+
+  .header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .header-main-left {
+    flex: 1;
+    z-index: 1;
+  }
+  .project-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 36pt;
+    color: #fff;
+    font-weight: 800;
+    font-style: italic;
+    line-height: 1;
+    margin-bottom: 3mm;
+  }
+  .project-title .dot {
+    color: #b07d4f;
+  }
+  .project-subtitle {
+    font-size: 11pt;
+    color: rgba(255,255,255,0.8);
+    font-weight: 500;
+    line-height: 1.35;
+    max-width: 420px;
+  }
+  .header-main-right {
+    text-align: right;
+    z-index: 1;
+    min-width: 170px;
+  }
+  .team-label {
+    font-size: 6.5pt;
+    color: rgba(255,255,255,0.45);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 600;
+    margin-bottom: 2mm;
+  }
+  .team-member {
+    font-size: 7.5pt;
+    color: rgba(255,255,255,0.8);
+    font-weight: 500;
+    line-height: 1.6;
+  }
+  .team-member b {
+    color: #e9c9a0;
+    font-weight: 700;
+  }
+  .advisor {
+    margin-top: 3mm;
+    padding-top: 2mm;
+    border-top: 1px solid rgba(255,255,255,0.12);
+  }
+  .advisor .team-label {
+    margin-bottom: 1mm;
+  }
+  .advisor-name {
+    font-size: 8pt;
+    color: #e9c9a0;
+    font-weight: 700;
+  }
+
+  /* ==================== STATS BAR ==================== */
+  .stats-bar {
+    display: flex;
+    gap: 3mm;
+    flex-shrink: 0;
+  }
+  .stat-card {
+    flex: 1;
+    background: #fff;
+    border-radius: 10px;
+    padding: 4mm 5mm;
+    border: 1px solid rgba(176,125,79,0.15);
+  }
+  .stat-value {
+    font-size: 18pt;
+    font-weight: 900;
+    color: #3b2f2a;
+    line-height: 1;
+    margin-bottom: 1mm;
+  }
+  .stat-value .pct { font-size: 14pt; }
+  .stat-label {
+    font-size: 6.5pt;
+    color: #8a7a6e;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  /* ==================== MAIN GRID ==================== */
+  .main-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1.15fr 1fr;
+    gap: 4mm;
+    min-height: 0;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: 4mm;
+    min-height: 0;
+  }
+
+  /* ==================== SECTION CARDS ==================== */
+  .card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 5mm 5.5mm;
+    border: 1px solid rgba(0,0,0,0.05);
+    flex-shrink: 0;
+  }
+  .card.grow {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+  .card.dark {
+    background: #3b2f2a;
+    border: none;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 3.5mm;
+  }
+  .card-num {
+    font-size: 14pt;
+    font-weight: 900;
+    color: #b07d4f;
+    line-height: 1;
+  }
+  .card-tag {
+    font-size: 5.5pt;
+    color: #a08e7e;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .card-title {
+    font-size: 12pt;
+    font-weight: 800;
+    color: #2c2420;
+    line-height: 1.2;
+    margin-bottom: 3mm;
+  }
+  .card.dark .card-title {
+    color: #fff;
+  }
+  .card.dark .card-num {
+    color: #e9c9a0;
+  }
+  .card.dark .card-tag {
+    color: rgba(255,255,255,0.4);
+  }
+
+  .card p {
+    font-size: 7.5pt;
+    line-height: 1.55;
+    color: #4a3f38;
+    margin-bottom: 2mm;
+  }
+  .card p:last-child { margin-bottom: 0; }
+  .card p .hl {
+    color: #9e2a2b;
+    font-weight: 700;
+  }
+  .card p .u {
+    text-decoration: underline;
+    text-decoration-color: #b07d4f;
+    text-underline-offset: 2px;
+    font-weight: 600;
+  }
+
+  /* ==================== CHECK LIST ==================== */
+  .check-list {
+    list-style: none;
+    padding: 0;
+  }
+  .check-list li {
+    font-size: 7.5pt;
+    color: #4a3f38;
+    padding: 1.5mm 0 1.5mm 16px;
+    position: relative;
+    line-height: 1.45;
+  }
+  .check-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #7b9e6f;
+    font-weight: 900;
+    font-size: 9pt;
+    top: 1mm;
+  }
+
+  /* ==================== ARCHITECTURE ==================== */
+  .arch-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 2mm;
+    margin: 3mm 0;
+  }
+  .arch-layer {
+    border-radius: 8px;
+    padding: 3mm 4mm;
+    position: relative;
+  }
+  .arch-layer::after {
+    content: '↓';
+    position: absolute;
+    bottom: -4.5mm;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 8pt;
+    color: #b0a090;
+    z-index: 1;
+  }
+  .arch-layer:last-child::after { display: none; }
+  .layer-1 { background: #f0e6da; border: 1px solid #d4c4b0; }
+  .layer-2 { background: #e8efe4; border: 1px solid #c5d6bc; }
+  .layer-3 { background: #e4ddd5; border: 1px solid #c9bfb2; }
+  .arch-layer .layer-name {
+    font-size: 7.5pt;
+    font-weight: 800;
+    color: #3b2f2a;
+    font-style: italic;
+  }
+  .arch-layer .layer-desc {
+    font-size: 6.5pt;
+    color: #7a6e62;
+    margin-top: 0.5mm;
+  }
+
+  .tech-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2mm;
+    margin-top: 3mm;
+  }
+  .pill {
+    background: #f5f0ea;
+    border: 1px solid #e0d5c8;
+    border-radius: 20px;
+    padding: 1.5mm 4mm;
+    font-size: 6.5pt;
+    font-weight: 600;
+    color: #5a4a3e;
+  }
+
+  /* ==================== ALGORITHM CARDS ==================== */
+  .algo-row {
+    display: flex;
+    gap: 3mm;
+    margin: 2mm 0;
+  }
+  .algo-box {
+    flex: 1;
+    background: #f9f5f0;
+    border-radius: 8px;
+    padding: 3.5mm;
+    text-align: center;
+    border: 1px solid #ece4d9;
+  }
+  .algo-icon {
+    font-size: 14pt;
+    margin-bottom: 1mm;
+  }
+  .algo-name {
+    font-size: 8pt;
+    font-weight: 800;
+    color: #3b2f2a;
+    margin-bottom: 1mm;
+  }
+  .algo-val {
+    font-size: 11pt;
+    font-weight: 900;
+    color: #b07d4f;
+    margin-bottom: 1mm;
+  }
+  .algo-desc {
+    font-size: 6.5pt;
+    color: #7a6e62;
+    line-height: 1.4;
+  }
+  .algo-extra {
+    font-size: 6.5pt;
+    color: #7a6e62;
+    margin-top: 2mm;
+    line-height: 1.45;
+  }
+
+  /* ==================== SCREENSHOT AREAS ==================== */
+  .ss-area {
+    border: 2px dashed #c5b9ab;
+    border-radius: 10px;
+    background: #faf7f3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4mm 3mm;
+    min-height: 38mm;
+    margin: 2mm 0;
+  }
+  .ss-area .ss-emoji {
+    font-size: 16pt;
+    margin-bottom: 1.5mm;
+    opacity: 0.45;
+  }
+  .ss-area .ss-name {
+    font-size: 7pt;
+    font-weight: 700;
+    color: #6a5d52;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .ss-area .ss-file {
+    font-size: 6pt;
+    color: #a09080;
+    margin-top: 1mm;
+    font-style: italic;
+  }
+
+  /* ==================== MODULE ITEMS ==================== */
+  .module-item {
+    display: flex;
+    gap: 3mm;
+    margin-bottom: 3mm;
+    align-items: flex-start;
+  }
+  .module-item:last-child { margin-bottom: 0; }
+  .module-ss {
+    flex-shrink: 0;
+    width: 36mm;
+  }
+  .module-ss .ss-area {
+    min-height: 42mm;
+    margin: 0;
+  }
+  .module-text {
+    flex: 1;
+  }
+  .module-text h4 {
+    font-size: 8.5pt;
+    font-weight: 800;
+    color: #2c2420;
+    margin-bottom: 1.5mm;
+    display: flex;
+    align-items: center;
+    gap: 2mm;
+  }
+  .module-text h4 .m-icon {
+    font-size: 10pt;
+  }
+  .module-text p {
+    font-size: 7pt;
+    color: #5a4a3e;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* ==================== RIGHT COL FEATURE ROW ==================== */
+  .feature-row {
+    display: flex;
+    gap: 3mm;
+    margin-bottom: 3mm;
+    align-items: flex-start;
+  }
+  .feature-row:last-child { margin-bottom: 0; }
+  .feature-row .f-ss {
+    flex-shrink: 0;
+    width: 30mm;
+  }
+  .feature-row .f-ss .ss-area {
+    min-height: 35mm;
+    margin: 0;
+  }
+  .feature-row .f-text {
+    flex: 1;
+  }
+  .feature-row .f-text h4 {
+    font-size: 8pt;
+    font-weight: 800;
+    color: #2c2420;
+    margin-bottom: 1mm;
+    display: flex;
+    align-items: center;
+    gap: 2mm;
+  }
+  .feature-row .f-text h4 .m-icon { font-size: 10pt; }
+  .feature-row .f-text p {
+    font-size: 6.5pt;
+    color: #5a4a3e;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* ==================== OFFLINE FIRST NOTE ==================== */
+  .offline-note {
+    background: #f5f0ea;
+    border-radius: 8px;
+    padding: 3mm 4mm;
+    margin-top: 2mm;
+    border-left: 3px solid #b07d4f;
+  }
+  .offline-note p {
+    font-size: 6.5pt;
+    color: #5a4a3e;
+    line-height: 1.5;
+    margin: 0;
+  }
+  .offline-note b {
+    color: #3b2f2a;
+  }
+
+  /* ==================== DARK CARD (SONUÇ) ==================== */
+  .card.dark p {
+    color: rgba(255,255,255,0.75);
+    font-size: 7pt;
+  }
+  .future-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2mm;
+    margin-top: 3mm;
+  }
+  .f-tag {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    padding: 1.5mm 3.5mm;
+    font-size: 6.5pt;
+    color: rgba(255,255,255,0.7);
+    font-weight: 500;
+  }
+
+  /* ==================== YENI EKLENEN KISIMLAR (Supabase DB vb.) ==================== */
+  .db-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 6.5pt;
+    margin-top: 2mm;
+  }
+  .db-table th {
+    background: #f0e6da;
+    color: #3b2f2a;
+    padding: 2mm 3mm;
+    text-align: left;
+    font-weight: 700;
+    border-bottom: 2px solid #d4c4b0;
+  }
+  .db-table td {
+    padding: 2mm 3mm;
+    border-bottom: 1px solid #ece4d9;
+    color: #4a3f38;
+  }
+  .db-table tr:last-child td { border-bottom: none; }
+  .tbl-name {
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    color: #b07d4f;
+  }
+  
+  .qr-box {
+    display: flex;
+    align-items: center;
+    gap: 4mm;
+    background: #f9f5f0;
+    border: 1px dashed #c5b9ab;
+    border-radius: 8px;
+    padding: 3mm;
+    margin-top: 2mm;
+  }
+  .qr-placeholder {
+    width: 25mm;
+    height: 25mm;
+    background: #fff;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6pt;
+    color: #999;
+    text-align: center;
+  }
+  .qr-text h4 {
+    font-size: 8pt;
+    color: #3b2f2a;
+    margin-bottom: 1mm;
+  }
+  .qr-text p {
+    font-size: 6.5pt;
+    margin: 0;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="poster">
+
+  <!-- ==================== HEADER ==================== -->
+  <div class="header">
+    <div class="header-top">
+      <div class="header-top-left">
+        <div class="uni-logo" style="border:none; background:transparent;">
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAOZklEQVRYha1YCXRW1bWOfRiLIgkCvrYIoghqJ+oThyfL6fWpLK3TkodSQUCKomgpUiiiULXgApR5EAIZSMhE5gEIRDIRCAmQkIHMc0ggCZCQ4f/vGe7N+75L/qw/NK+vuHrXuis39z/3nH32/va3v308vD39PW7wvsnL0/+B22/2Wzzh7rDYN14+Urvkk5PimzVn1Y4t58xtm4v0qq9y1YL3M7ueezoxf9QdQb63D/L7Pb4b/gPW8riRwT8eerPfjEm/ispc+/VZo/hcm1LKtCyrp0drq6e+rtPscbuUsqyjyQ3C16ekOzqiWnw0P7N9zJ37Ar1u9n+Mm/xXGvgjTPrqM0/E5x9IqJNCmBYNON/QpbdsKpR8djiUufjjLOFuYHRktUpOOi8bz3frrBMX7XGXLxnm+nX5jntHhexHFCb8KwwcefdPggP3+JQ4DUNbJ45fVHHRtYqLJR2oV++/m+6MCK+yjV74wXHD3cDlS7NlS4vTjI2uUYlxtSo7q1l9s/asbejFCw7zg3nHWocN9v8Qawz6QQZih798ZnJCfllpu0b4dHe3snx2FIvnnkns4gLbNhWpTz4+Yfz2qQTjzOlWNX1asoiMqFItzU471AvmHzOcTm3CUNFQ36U/wv9zZ6Y5L7U6dVxsrTCBDl+fUueYfw/2w3pDbshA4uStqd/XtbUJE/iyXn/5sPOd6Sld+8OqxIZv8o2Vn+XIz5Zli8qKqwoLmvCOPAkP0UtdXcqGQEZ6k1qyMMvYtqVIAhoKUZBLPzlprF93VhzPvKiamx3mzh1FRtbxZvngveGJWNf7nzKQnqNxHR3SDAuuFFevSpOhhUHG3Nmpxrdr8+WhA/WypdmhEVqTyRIaXKnWrMqTyxZnm58vzdGbNxQqjFHAKVKlx4KHJQ2fNyfdQLKIDsz5wXsZoqS4TZUWt+nCgstqwtiwGKw/+P8zcOSzk+ML2uG5PbuKRei+ChEfUyswubny81P2hFUVVzXDuOnbAvnYQzFqxJC9ltfNfj3wutuN/z39e0aNCDJfe+mwSgAGieGDMPpc0RX1xYpTMiOtScXF1KiQfRU2puFV+dNhQZuvz/B+2cqEKAfmGNYjSQ1q6mtHDHhRJh2ql/AUvWDu9SuTD9wTrmnI8FsDbOPw7YA3jRw+OMDy/rG/9cJ/HVDE6pUrhhkfWyudDm0t+uNxcaGpW0dFVkv+3bWj2IFv3hjQQFIJQXvlsmFiVzZlJB9uULPeTjG2bCoQl0ARCJEchsW4+E+8Ay1410Boxa/vj7ANdhnGMb974ZDas6vEWP1lrvTqfU+P+u8pk0iQnqSD9YrY/mxZjsHn1hYnE5Eer/J2I/U+EibPOZCpbVeE/gsqAz4wc8+0cteC/PU6QuVuxLTXktUfZqer//hllEb1EH/+U5akR+8bHWrCE2LxwhNy9J37TL/dpeKuEftM13ccswUY5ZzwmimEtqKjqtXM6UeNqP3VsjD/sgZsVvUzkBXiYGK9pPsXzM8wXnzuoPPzT3OM3TtL5NV2Qc/1M47PWzYWynt/FtK38NtvHpX+vqUiPLTKmPggPNr7fh428cqUJOUe+hG37bWiIqoVaMj68L0M48+LTgjgVAKbNjVh4y3MB5eBNz3yq+hMV4Ug323bUij+iqTgu0D/coWQ9cPWHcAVsGhgY5brHfjMPHKoQXy37Zzwchv76MRo/flfcqT7BnnT0zXVHRqVRTCLI/dXGaxILJ25wKqXp98i20B8+MA61Nae665W8FvzRYfJhHD3HI0be1ewufu7EjHsVn/Lzlr8tnb1Wfnob6L1VytPy6cfj1euJJkwNlRvRUkc6bXX8r7l2njXb++/m0HsmelpTbIN0WNirvs6TyhpWpMnxebQeR5UJSXn2vTBhHpBl/d60SSQN68vtEPLhPifV5MV+E0E+JYZPjuLRX7eJeWPZybJg/eF6+DACgOqpWfCmDC9cX2BfOHZAwoQsccTyzu3FYtAv3Lx5Yoz8olJsYob5bxlJe36QHyd/PiDTOPdmali/dp8UV3Zof/21zMGDBzrQclEVZKW0qh8viuWURFVcuniLIOU8vhDMZqgRv01gAtiTjOs9ByyUQwZ5GtB3WhQkYHQ2mH0gpeKi9oAkdN2kvzm5xH6CzxjrJ3dDyOpGNblS7IF5upBliuWveCgcjnt9SPGrBkpoq6m08xMv6CHDPKb4TH15eRaAnPN17ny+WcOOHduP2cDFbynXSTM8HFi91CvWZ0nJ/362jtsUjU2dBkvPX9I4r2R+n2jc6jnNfL+DPh7dnJCv2+XLDrJtex3Tz0er+kMlEKDEg2hJg/3kE3g5fUeFJssR7U1nToyvEp9iuKedfyiZPka2kvC5LntoBJ3Av75+HAdFlIpaNwTD8c69/gUOxB2sXlDgTM6oqZr/JhQ+eTjcTIooNzwvtW/L5nGjQoBF5aKYSRw/E8vozLpXduLBWq/nvNOKmr9KYPF4v6xYUkeVMIEamJcncTO9amcFtnZKS3W1j5A9+4aVKJQbcy1q/NE8N4K53fbz0nUW2P3rmJH9slmY/rU7yWJt6jwihERXuk4m3dJcuHQoErn3HfS5B1DAqyd+J/J1MeLtwVY5wqvKITciImsEQF+ZXjOccJAc/IjsXke2yHT29uFhuLQ+0OqpM+uYt3Y2GWy8LtTA7EYANyB9Q0soJgQ/P1FhDU/77IBgSE5jl733V1qHD7UYNwN6nHh8g+z0yQ2L2a/nSrdaWjYLf492SeazYryq3rjhnzV1alMVhXSzXNPJVZ4sIewANILTQ6dntKktm4ptJUKVYm7geSt/aFVYgd47suVp8V4ZCtpA542EFaDnqNxt/6br4UQO0DaJHzJMU8+FqfAp8YaUAiZwFUuew20Tme3mKHB5fLDececf5x/XH618owT5dZ4/ukDJR5scKjjfjoiyPnx/Exn6tFGQ6JabrIpxq+vtvqA9yY+GGlXCPIcqaS46IpgQhBzUClOv90lRkxUjaO6qsPAZrrOnGoVGekXjGVLsuW4u0I158MactbvU5XLiyOH7rUq4T02N8QdQwsvasq9RyZG53h8hO6LaU5WDwmsEA/9IlIcTT4vDyXW903CUrV4YVa/0JDnSB/MViSEIuYOH2ww6DlApet2Tz+Li4fuqxTkO3fMkQ9HDb9Wn8cjMsxY4FjGxdRSzkGOnXaS+gCRCA/EOZ/xpoKZPSO1G4QrqNUaz3fpUcODTBoFlSOYbe5ZTBIePXKfjTGEUJ7NvSSJOYYVnjNgnD1+xrSjauabKcqdZqa9DqExK91+h7aVoranvr5TI1EVS+yKZack2wRAZoXHz4YF+bJyrFiOH5bniCD/cnkwoc7gOyoY6rlVX+QKqBKStWJtnXBPqEaFEBNBwuS5QFAJsvNa1gNTCCvEbqXxNoyb/Gis3AQ4jBsdon/7ZKJevjRHsuqwMhGz+Fbl5V5SKUcb7TaW3WLykQYVG1XD36d4sKkG7pSrBtfXdem3pibbsjwBO6LYpMcomV5+IUmx8G/dXChZ0BniZ59IUN6D/a0wGOTVmxCfLslWCKs5480UuRHKm0J17dd58k8LTsj/fDhWj7jtGgeiztsZu/Ra4y9eeSlJBPqXSfIyGv92jPGimhnOpprGsUla8P4xsQjdGoSrFpDpU6CE+6lkeImFn3zG8uV6P3dWmpo3J43eFEiIPjiMGx2qkb3y9t42wB0mW9EZsukKCaoQKLOCzdeSRVmiG5UF2Izu04Nj7gwOugwl7benVM6ble5Ee8i/PD2gpzSVcD85D08BCmLYLQH9wH8aPMcS6N4GMKyL4Dl343g/jyRjgdi8scCgQU1o8E+eaJbHMi6oyPBqifC+2mcgJnxsw7oCB9OcUodZXVvToWdOT7HVNPCmSNTuXvzbyjN2febzvShf9OicGamSPIeISBpMo4hRlELtbhzaTF1R1q6jI6olYCRASdIH4pjrs7lC45aPcZ7ukv+mcaNC97MhZ6jZ41JZv/lGsoO7c6DBoUynEnYtgjJkqxJKfSYQOMvmSHImemhJQYtslQwfRUefcdCXp3NadVNjt2bLCbUOFV4pl3ySJaDedQR6b8zz1t83TZ7+E8DkrSBpa+vGIlGQf1mt/iqXzC/jomt4EtBDmX4f8OXVq6pRP6lKlKvwu+Nr1B1B5txZ6ZLZ6nrHseXwHJ2wY1uRYDPPaPHkghhkM/+L+/Ynebsdh/Tri3lWgvjbHR3wqH435aADisXuwlwXCf29ORl2lg79By2n6+aYB+4J0+xhXKcOvBhOKm2UWttIOmbOjLQmbOR+74Hazt57EM9KSAtQwRqyq49+3C8SK8PDlpJljyROzCF57NrKCjJ+dJj5xitHUIPLFFvWgebhxtEsifjYGgG4dOL7qdfZM+DZzBCelaCR0QNN6po463gzZb+9e4oLSiaoEusUCj+VSSdq6TVe7VTuEbj+Ijmv+vJMJza4cABb/s/TLW+IxRgeR1gDzM3w8CQgPLjSSTWMZkeEh1TaR3ToaxVaT0ctoMCxoUEVTvfQul8M67fr8jvAEDTuRzdiIO/BPCvhcYSrJXVdPLZIPnxeJMbX2RwGoWlUlF2lKtKgDAfl27695QYMNkFHXRS3TAT3OZgQoKWmgcL6zxpon9fwrOTVF5OqmNWURAwJyLg7I73JYHjBk/rokfOaXR69hxrsZEgjw6q66VH/3aVOiFfBzpGGcbM8xmO2Xp8QP8RA1z0cXLYatNECpaK4CE+peArGMMEIh++uUsp0C+paoctzQq7ZbMDeuqaqQ9PTPI3lEUsvz/3Dk9UbNdB138mOn001+lbnsfQLPK1iF8Y+2j5Q7z1UtysSEwThVwvey2yHIo/qLV+eN7LmjRrYV3lwj2XfytaQ3RcbHPYQ//1kYumkidHZqO8RMGjl0EF+UzDW6weu4/G/IC67x3VeZzkAAAAASUVORK5CYII=" style="width: 100%; height: 100%; border-radius: 8px; object-fit: contain; background: #fff; padding: 2px;" />
+        </div>
+        <div class="uni-text">
+          Tekirdağ Namık Kemal Üniversitesi
+          <span>Çorlu Mühendislik Fakültesi · Bilgisayar Mühendisliği</span>
+        </div>
+      </div>
+      <div class="header-badges">
+        <div class="h-badge">mHEALTH</div>
+        <div class="h-badge">PROJE-II · 2026</div>
+      </div>
+    </div>
+
+    <div class="header-main">
+      <div class="header-main-left">
+        <div class="project-title">Memento<span class="dot">.</span></div>
+        <div class="project-subtitle">Alzheimer Hastaları İçin Terapötik Hafıza Egzersiz ve Güvenlik Odaklı Mobil Uygulama</div>
+      </div>
+      <div class="header-main-right">
+        <div class="team-label">Hazırlayanlar</div>
+        <div class="team-member"><b>Mehrdad Shomali</b> · 2210656637</div>
+        <div class="team-member"><b>Kerim Can Güzel</b> · 2220656047</div>
+        <div class="team-member"><b>Efekan Çetin</b> · 2220656034</div>
+        <div class="advisor">
+          <div class="team-label">Danışman</div>
+          <div class="advisor-name">Dr. Öğr. Üyesi Erkan Özhan</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== STATS BAR ==================== -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-value">55M+</div>
+      <div class="stat-label">kişi demans ile yaşıyor (WHO)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value"><span class="pct">%60–70</span></div>
+      <div class="stat-label">vakanın nedeni Alzheimer</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">100%</div>
+      <div class="stat-label">çevrimdışı çalışabilen mimari</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">6</div>
+      <div class="stat-label">bütünleşik modül · iOS & Android</div>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN GRID ==================== -->
+  <div class="main-grid">
+
+    <!-- ======== SOL KOLON ======== -->
+    <div class="col">
+
+      <!-- 01 - PROBLEM -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-num">01</div>
+          <div class="card-tag">PROBLEM</div>
+        </div>
+        <div class="card-title">Problem & Motivasyon</div>
+        <p>Alzheimer; hafızayı, dili ve yön bulmayı geri döndürülemez biçimde zayıflatan ilerleyici bir hastalıktır. Hastalar yakınlarını tanıyamaz, ilaç rutinlerini unutur ve evden uzaklaşıp <span class="hl">kaybolma riski</span> taşır.</p>
+        <p>Mevcut uygulamalar yaşlı kullanıcıya uygun olmayan karmaşık arayüzlere sahip ve çoğunlukla <span class="u">tek bir özelliğe</span> odaklıdır.</p>
+      </div>
+
+      <!-- 02 - AMAÇ -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-num">02</div>
+          <div class="card-tag">HEDEFLER</div>
+        </div>
+        <div class="card-title">Amaç</div>
+        <ul class="check-list">
+          <li>Kişiselleştirilebilir bilişsel hafıza egzersizleri</li>
+          <li>Coğrafi çit ile evden uzaklaşmayı tespit ve yönlendirme</li>
+          <li>İlaç ve rutinler için zamanlanmış hatırlatmalar</li>
+          <li>Bakıcıya nesnel ilerleme analitiği</li>
+          <li>WCAG uyumlu, yaşlı dostu erişilebilir arayüz</li>
+        </ul>
+      </div>
+
+      <!-- 03 - MİMARİ -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-num">03</div>
+          <div class="card-tag">MİMARİ</div>
+        </div>
+        <div class="card-title">Sistem Mimarisi</div>
+        <div class="arch-stack">
+          <div class="arch-layer layer-1">
+            <div class="layer-name">Sunum Katmanı</div>
+            <div class="layer-desc">React Native ekranları & UI bileşenleri</div>
+          </div>
+          <div class="arch-layer layer-2">
+            <div class="layer-name">İş Mantığı</div>
+            <div class="layer-desc">Context API · useReducer · Custom Hooks</div>
+          </div>
+          <div class="arch-layer layer-3">
+            <div class="layer-name">Veri / Servis</div>
+            <div class="layer-desc">Supabase (PostgreSQL) · AsyncStorage önbellek</div>
+          </div>
+        </div>
+        <div class="tech-pills">
+          <span class="pill">React Native</span>
+          <span class="pill">Expo SDK 54</span>
+          <span class="pill">TypeScript</span>
+          <span class="pill">Supabase</span>
+          <span class="pill">expo-location</span>
+        </div>
+      </div>
+      
+      <!-- 04 - ERIŞİLEBILİRLIK & i18n (YENI EKLENEN SOL ALT) -->
+      <div class="card grow">
+        <div class="card-header">
+          <div class="card-num">04</div>
+          <div class="card-tag">ALTYAPI</div>
+        </div>
+        <div class="card-title">Erişilebilirlik (WCAG) & Çoklu Dil</div>
+        <p>Beynin aşırı uyarılmasını önlemek için pastel tonlar (Sage, Wood, Blue) tercih edilmiştir. İnce motor beceri kaybına karşı buton yükseklikleri <b>minimum 56px</b> yapılarak devasa dokunma hedefleri sağlanmıştır.</p>
+        <p>Proje baştan itibaren uluslararasılaştırma (i18n) destekli kodlanmıştır. Ayarlar üzerinden anında dil değişikliği yapılabilir.</p>
+        
+        <div class="qr-box">
+          <div class="qr-placeholder">
+            [ QR KOD ]<br>Buraya<br>Yapıştır
+          </div>
+          <div class="qr-text">
+            <h4>Canlı Demo & Kaynak Kod</h4>
+            <p>Projeyi test etmek veya Github reposunu incelemek için QR kodu okutabilirsiniz.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- ======== SOL KOLON SONU ======== -->
+
+    <!-- ======== ORTA KOLON ======== -->
+    <div class="col">
+
+      <!-- 05 - ALGORİTMALAR -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-num">05</div>
+          <div class="card-tag">YÖNTEM</div>
+        </div>
+        <div class="card-title">Çekirdek Algoritmalar</div>
+        <div class="algo-row">
+          <div class="algo-box">
+            <div class="algo-icon">🔀</div>
+            <div class="algo-name">Fisher-Yates</div>
+            <div class="algo-val">O(N)</div>
+            <div class="algo-desc">Kartları ve cevap seçeneklerini eşit olasılıklı karıştırır.</div>
+          </div>
+          <div class="algo-box">
+            <div class="algo-icon">📍</div>
+            <div class="algo-name">Haversine</div>
+            <div class="algo-val">≤100 m</div>
+            <div class="algo-desc">Evin jeodezik mesafesini ölçer; güvenli bölge eşiği 100 m.</div>
+          </div>
+        </div>
+        <p class="algo-extra">Arka plan konum görevi cihaz kapalıyken bile çalışır; pil için zaman (15 dk) ve mesafe (50 m) filtreleriyle optimize edilmiştir.</p>
+      </div>
+
+      <!-- 06 - REHABİLİTASYON -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-num">06</div>
+          <div class="card-tag">MODÜLLER</div>
+        </div>
+        <div class="card-title">Bilişsel & İşitsel Rehabilitasyon</div>
+
+        <!-- Aile Albümü + Hafıza -->
+        <div class="module-item">
+          <div class="module-ss">
+            <div class="ss-area">
+              <div class="ss-emoji">🖼️</div>
+              <div class="ss-name">Aile Albümü</div>
+              <div class="ss-file">FamilyAlbumScreen.tsx</div>
+            </div>
+          </div>
+          <div class="module-text">
+            <h4><span class="m-icon">🖼️</span> Aile Albümü & Hafıza Egzersizi</h4>
+            <p>Yakınların fotoğrafları soru–cevaba dönüşür; doğru cevap kutlanır, yanlışta nazik ipucu verilir.</p>
+          </div>
+        </div>
+
+        <!-- Sesli Mesajlar -->
+        <div class="module-item">
+          <div class="module-ss">
+            <div class="ss-area">
+              <div class="ss-emoji">🎙️</div>
+              <div class="ss-name">Sesli Mesajlar</div>
+              <div class="ss-file">VoiceMessagesScreen.tsx</div>
+            </div>
+          </div>
+          <div class="module-text">
+            <h4><span class="m-icon">🎙️</span> Sesli Mesajlar</h4>
+            <p>Sevdiklerinin kendi sesinden kayıtlar; işitsel hafıza daha uzun korunur.</p>
+          </div>
+        </div>
+
+        <!-- Coğrafi Çit -->
+        <div class="module-item">
+          <div class="module-ss">
+            <div class="ss-area">
+              <div class="ss-emoji">🗺️</div>
+              <div class="ss-name">Güvenlik Haritası</div>
+              <div class="ss-file">SafetyScreen.tsx</div>
+            </div>
+          </div>
+          <div class="module-text">
+            <h4><span class="m-icon">🗺️</span> Coğrafi Çit & Güvenlik</h4>
+            <p>Ev konumu kaydedilir; güvenli bölge dışına çıkınca "Eve Yol Tarifi" otomatik açılır.</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 07 - ONBOARDING & SPLASH (YENI EKLENEN ORTA ALT) -->
+      <div class="card grow">
+        <div class="card-header">
+          <div class="card-num">07</div>
+          <div class="card-tag">KULLANICI DENEYİMİ</div>
+        </div>
+        <div class="card-title">Onboarding & Karşılama</div>
+        
+        <div class="feature-row">
+          <div class="f-ss">
+            <div class="ss-area">
+              <div class="ss-emoji">🚀</div>
+              <div class="ss-name">Splash</div>
+              <div class="ss-file">Splash.tsx</div>
+            </div>
+          </div>
+          <div class="f-text">
+            <h4><span class="m-icon">🌟</span> Animasyonlu Giriş</h4>
+            <p>Hasta kafa karışıklığı yaşamasın diye özel, yavaş ve yatıştırıcı açılış ekranı.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- ======== ORTA KOLON SONU ======== -->
+
+    <!-- ======== SAĞ KOLON ======== -->
+    <div class="col">
+
+      <!-- 08 - RUTİN & BAKICI -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-num">08</div>
+          <div class="card-tag">MODÜLLER</div>
+        </div>
+        <div class="card-title">Rutin Takibi & Bakıcı Paneli</div>
+
+        <!-- Rutin -->
+        <div class="feature-row">
+          <div class="f-ss">
+            <div class="ss-area">
+              <div class="ss-emoji">⏰</div>
+              <div class="ss-name">Rutinler</div>
+              <div class="ss-file">RoutineScreen.tsx</div>
+            </div>
+          </div>
+          <div class="f-text">
+            <h4><span class="m-icon">💊</span> Günlük Rutin & İlaç</h4>
+            <p>Yedi kategoride zamanlanmış bildirimler hastayı saatinde uyarır.</p>
+          </div>
+        </div>
+
+        <!-- Bakıcı Analitik -->
+        <div class="feature-row">
+          <div class="f-ss">
+            <div class="ss-area">
+              <div class="ss-emoji">📊</div>
+              <div class="ss-name">Analitik</div>
+              <div class="ss-file">AnalyticsScreen.tsx</div>
+            </div>
+          </div>
+          <div class="f-text">
+            <h4><span class="m-icon">📊</span> Bakıcı Analitiği</h4>
+            <p>İlaç uyumu ve hafıza testi eğilimleri grafiklerle; doktor randevuları için değerli veri.</p>
+          </div>
+        </div>
+
+        <!-- Offline-first note -->
+        <div class="offline-note">
+          <p><b>Çevrimdışı öncelikli:</b> veriler Supabase ile senkronlanır, yerel önbelleğe aynılanır; internet kesilse de uygulama çalışır.</p>
+        </div>
+      </div>
+      
+      <!-- 09 - SUPABASE DB ŞEMASI (YENI EKLENEN SAĞ ORTA) -->
+      <div class="card grow">
+        <div class="card-header">
+          <div class="card-num">09</div>
+          <div class="card-tag">VERİTABANI</div>
+        </div>
+        <div class="card-title">Supabase (PostgreSQL) Mimarisi</div>
+        <p>Firebase'in doküman yapısı yerine, ilişkisel bütünlük için <b>Supabase</b> tercih edilmiştir. Medya dosyaları (resim/ses) <i>Storage Bucket</i>'a yüklenir, DB'de yalnızca genel URL tutularak veritabanı şişmesi engellenir.</p>
+        
+        <table class="db-table">
+          <thead>
+            <tr>
+              <th>Tablo Adı</th>
+              <th>Bağıntı (Foreign Key)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="tbl-name">profiles</td>
+              <td>— (Ana Tablo)</td>
+            </tr>
+            <tr>
+              <td class="tbl-name">memory_cards</td>
+              <td>profile_id → profiles(id)</td>
+            </tr>
+            <tr>
+              <td class="tbl-name">routines</td>
+              <td>profile_id → profiles(id)</td>
+            </tr>
+            <tr>
+              <td class="tbl-name">routine_completions</td>
+              <td>routine_id → routines(id)</td>
+            </tr>
+            <tr>
+              <td class="tbl-name">game_sessions</td>
+              <td>profile_id → profiles(id)</td>
+            </tr>
+            <tr>
+              <td class="tbl-name">safety_profiles</td>
+              <td>profile_id → profiles(id)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 10 - SONUÇ (DARK) -->
+      <div class="card dark">
+        <div class="card-header">
+          <div class="card-num">10</div>
+          <div class="card-tag">SONUÇ</div>
+        </div>
+        <div class="card-title">Sonuç & Gelecek Çalışmalar</div>
+        <p>Memento; bilişsel rehabilitasyon, güvenlik ve bakıcı desteğini tek bütünleşik uygulamada birleştirir ve belirlenen tüm işlevsel hedeflere ulaşır.</p>
+        <div class="future-tags">
+          <span class="f-tag">SOS acil çağrı</span>
+          <span class="f-tag">Yapay zekâ yüz tanıma</span>
+          <span class="f-tag">Akıllı saat · düşme algılama</span>
+        </div>
+      </div>
+
+    </div>
+    <!-- ======== SAĞ KOLON SONU ======== -->
+
+  </div>
+
+</div>
+
+</body>
+</html>

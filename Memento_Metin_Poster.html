@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Memento - İçerik Ağırlıklı Premium Poster (A3 Uyumlu)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
+
+    @page {
+      size: 297mm 420mm; /* A3 Dikey */
+      margin: 0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 297mm;
+      height: 420mm;
+      font-family: 'Inter', sans-serif;
+      color: #1c2b27;
+      background: #fdfdfc; 
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ==================== PREMIUM HEADER ==================== */
+    .header-wrapper {
+      background: linear-gradient(135deg, #1b3a32 0%, #10241f 100%);
+      color: white;
+      padding: 10mm 14mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+    .header-left { flex: 1; }
+    .uni-info {
+      font-size: 10pt;
+      color: #92b8af;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 3mm;
+      display: flex;
+      align-items: center;
+      gap: 3mm;
+    }
+    .logo-image {
+      width: 72px; height: 72px;
+      background: white; border-radius: 50%;
+      padding: 4px; object-fit: contain;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    .poster-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 32pt;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 2mm;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .poster-title span { color: #d4b886; }
+    .poster-subtitle {
+      font-size: 11pt;
+      color: #c0d1cd;
+      font-style: italic;
+      max-width: 90%;
+      font-weight: 300;
+    }
+    
+    .qr-box { width: 36mm; text-align: center; }
+    .qr-code {
+      width: 28mm; height: 28mm;
+      background: white; padding: 1.5mm; border-radius: 4px;
+      margin: 0 auto 2mm auto;
+      background-image: url('assets/expo_qr.png');
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    .qr-box p { font-size: 7.5pt; color: #92b8af; font-weight: 600; letter-spacing: 0.5px; }
+
+    /* ==================== AUTHOR BANNER ==================== */
+    .author-banner {
+      background: #f0f4f3; color: #4a5c57;
+      padding: 3mm 14mm; font-size: 9.5pt;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid #e1e8e6;
+    }
+    .author-banner b { color: #1b3a32; margin-right: 1mm; font-weight: 700; }
+    .author-banner span { margin-right: 4mm; }
+
+    /* ==================== STATS ROW ==================== */
+    .stats-row { display: flex; padding: 6mm 14mm; gap: 4mm; background: #ffffff; }
+    .stat-box {
+      flex: 1; background: #fafcfa; border-radius: 8px; padding: 3.5mm;
+      text-align: center; border: 1px solid #eef2f0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+    .stat-num { font-size: 20pt; font-weight: 800; color: #a17d4a; margin-bottom: 1mm; font-family: 'Playfair Display', serif;}
+    .stat-label { font-size: 7.5pt; color: #5c706a; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+
+    /* ==================== MAIN CONTENT GRID ==================== */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 5mm;
+      padding: 0 14mm 6mm 14mm;
+      flex: 1;
+      background: #ffffff;
+    }
+    .col { display: flex; flex-direction: column; gap: 5mm; height: 100%; }
+
+    /* ==================== CARDS ==================== */
+    .card {
+      background: #ffffff; border-radius: 10px; border: 1px solid #eaeeed;
+      overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      display: flex; flex-direction: column;
+    }
+    .card.expand { flex: 1; } 
+    
+    .card-header {
+      padding: 3mm 5mm; color: white; font-weight: 700; font-size: 11pt;
+      display: flex; align-items: center; gap: 3mm; letter-spacing: 0.5px;
+    }
+    .bg-green { background: #264a40; }
+    .bg-brown { background: #826343; }
+    .bg-teal  { background: #3d6a6f; }
+
+    .card-body {
+      padding: 4mm 5mm; font-size: 8.5pt; line-height: 1.5; color: #2e3b38; flex: 1;
+    }
+    .card-body p { margin-bottom: 2.5mm; text-align: justify; }
+    .card-body p:last-child { margin-bottom: 0; }
+    .card-body b { color: #1b3a32; font-weight: 700; }
+
+    /* ==================== LISTS & STEPS ==================== */
+    .step-list { list-style: none; }
+    .step-list li { display: flex; align-items: flex-start; margin-bottom: 2.5mm; }
+    .step-list li:last-child { margin-bottom: 0; }
+    .step-num {
+      width: 16px; height: 16px; background: #264a40; color: white; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 7.5pt; font-weight: bold; margin-right: 2.5mm; flex-shrink: 0; margin-top: 1.5px;
+    }
+
+    /* ==================== ARCHITECTURE & TABLES ==================== */
+    .arch-box {
+      background: #f7f9f8; border: 1px solid #dce4e2; border-radius: 6px;
+      padding: 3mm; text-align: center; margin-bottom: 2mm; position: relative;
+    }
+    .arch-box::after {
+      content: '▼'; position: absolute; bottom: -3.5mm; left: 50%; transform: translateX(-50%);
+      color: #92b8af; font-size: 8pt; z-index: 1;
+    }
+    .arch-box:last-child::after { display: none; }
+    .arch-title { font-weight: 800; font-size: 9pt; color: #1b3a32; }
+    .arch-sub { font-size: 7.5pt; color: #5c706a; margin-top: 1px; }
+
+    .tech-table { width: 100%; border-collapse: collapse; font-size: 8pt; color: #4a5c57; }
+    .tech-table td { padding: 2mm 0; border-bottom: 1px solid #eaeeed; }
+    .tech-table tr:last-child td { border-bottom: none; }
+
+    /* ==================== ALGORITHMS & CODE ==================== */
+    .code-box {
+      background: #fdfbf8; border: 1px solid #e8dccb; border-radius: 6px;
+      padding: 3mm; font-family: 'Courier New', monospace; font-size: 7.5pt;
+      color: #4a3627; margin: 1.5mm 0; white-space: pre-wrap; font-weight: 600;
+    }
+    .algo-title { font-weight: 800; font-size: 8.5pt; color: #826343; border-bottom: 1px solid #e8dccb; padding-bottom: 1mm; margin-bottom: 1.5mm; }
+
+    /* ==================== MODULE DETAILS BLOCK ==================== */
+    .mod-block {
+      background: #f7f9f8; padding: 3.5mm; border-radius: 8px; border: 1px solid #e1e8e6;
+      margin-bottom: 2.5mm;
+    }
+    .mod-block:last-child { margin-bottom: 0; }
+    .mod-icon { font-size: 11pt; margin-bottom: 1mm; display: inline-block;}
+    .mod-title { font-size: 9pt; font-weight: 800; color: #3d6a6f; margin-bottom: 1mm; display: inline-block; margin-left: 2mm;}
+    .mod-text { font-size: 8pt; color: #4a5c57; line-height: 1.4;}
+
+    /* ==================== FOOTER ==================== */
+    .footer {
+      background: #1b3a32; color: #92b8af; text-align: center;
+      padding: 4mm; font-size: 8pt; margin-top: auto; letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header-wrapper">
+    <div class="header-left">
+      <div class="uni-info">
+        <img src="assets/nku_logo.png" class="logo-image" alt="NKÜ Logo">
+        T.C. Tekirdağ Namık Kemal Üniversitesi · Çorlu Mühendislik Fakültesi · Bilgisayar Mühendisliği Bölümü
+      </div>
+      <div class="poster-title">MEMENTO: Alzheimer Hastaları İçin<br><span>Hafıza Egzersiz</span> Mobil Uygulaması</div>
+      <div class="poster-subtitle">Bilişsel rehabilitasyon, GPS tabanlı konum güvenliği ve günlük rutin yönetimini birleştiren çevrimdışı-öncelikli bir mHealth ekosistemi</div>
+    </div>
+    <div class="qr-box">
+      <div class="qr-code"></div>
+      <p>PROJE DEPOSU<br>github.com/mehrdadshomali</p>
+    </div>
+  </div>
+
+  <div class="author-banner">
+    <div>
+      <span><b>Mehrdad SHOMALI</b> · 2210656637</span>
+      <span><b>Kerim Can GÜZEL</b> · 2220656047</span>
+      <span><b>Efekan ÇETİN</b> · 222656034</span>
+    </div>
+    <div>Danışman: <b>Dr. Öğr. Üyesi Erkan ÖZHAN</b> · Lisans Bitirme Projesi · Haziran 2026</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-num">14+</div><div class="stat-label">Mobil Ekran / Modül</div></div>
+    <div class="stat-box"><div class="stat-num">2</div><div class="stat-label">Çapraz Platform (iOS · Android)</div></div>
+    <div class="stat-box"><div class="stat-num">5</div><div class="stat-label">Context Provider Modülü</div></div>
+    <div class="stat-box"><div class="stat-num">100%</div><div class="stat-label">Çevrimdışı (Offline) İşlevsellik</div></div>
+  </div>
+
+  <div class="main-grid">
+    
+    <!-- SOL KOLON -->
+    <div class="col">
+      <div class="card">
+        <div class="card-header bg-green">📋 Özet</div>
+        <div class="card-body">
+          <p>Memento; <b>Alzheimer ve demans hastalarının</b> bilişsel sağlığını desteklemek, fiziksel güvenliğini sağlamak ve günlük rutinlerini yönetmek üzere geliştirilmiş bütünleşik bir <b>mobil sağlık (mHealth)</b> asistanıdır.</p>
+          <p>Teknolojik altyapısı React Native & Expo ile çapraz platform inşa edilmiştir. Kullanım sırasında yaşanabilecek internet kesintisi sorunlarını ortadan kaldırmak için, AsyncStorage ve Supabase entegrasyonuyla <b>%100 çevrimdışı-öncelikli (offline-first)</b> veri senkronizasyon mimarisi kurulmuştur.</p>
+          <p>Piyasadaki tek işlevli uygulamaların aksine Memento, hayati fonksiyonları devasa buton boyutları ve yüksek zıtlık oranlarıyla <b>WCAG AA</b> erişilebilirlik standartlarında, "hepsi bir arada" felsefesiyle sunar.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header bg-brown">🎯 Giriş ve Motivasyon</div>
+        <div class="card-body">
+          <ul class="step-list">
+            <li><div class="step-num">•</div><div><b>Klinik Problem:</b> Hafıza zayıflaması, günlük ilaç rutinlerinin unutulması ve evden uzaklaşıp kaybolma (wandering) riski.</div></li>
+            <li><div class="step-num">•</div><div><b>Teknolojik Eksiklik:</b> Mevcut uygulamaların yaşlı kullanıcılar için fazla dijital karmaşıklık içermesi ve tek bir dikeyde kalması.</div></li>
+            <li><div class="step-num">•</div><div><b>Amaç:</b> Demanslı bireyin bilişsel gelişimini, coğrafi güvenliğini ve psikolojik bütünlüğünü stresten uzak, tek platformda yönetmek.</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card expand">
+        <div class="card-header bg-teal">💻 Kullanılan Teknoloji Yığını</div>
+        <div class="card-body">
+          <table class="tech-table">
+            <tr><td style="font-weight: 800; width: 40%;">React Native</td><td>0.81.5 (Mobil Arayüz Çatısı)</td></tr>
+            <tr><td style="font-weight: 800;">Expo SDK</td><td>54.0.31 (Donanım & Arka Plan API)</td></tr>
+            <tr><td style="font-weight: 800;">TypeScript</td><td>5.9.2 (Statik Tip Güvenliği)</td></tr>
+            <tr><td style="font-weight: 800;">Supabase-js</td><td>2.91.0 (PostgreSQL & Storage)</td></tr>
+            <tr><td style="font-weight: 800;">AsyncStorage</td><td>Çevrimdışı Veri Yönetim Katmanı</td></tr>
+            <tr><td style="font-weight: 800;">Context API</td><td>Global Durum (State) Yönetimi</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORTA KOLON -->
+    <div class="col">
+      <div class="card">
+        <div class="card-header bg-teal">⚙️ Önerilen Yöntem · 4 Adım</div>
+        <div class="card-body">
+          <ul class="step-list">
+            <li><div class="step-num" style="background:#3d6a6f">1</div><div><b>Kayıt & Profilleme:</b> Hastanın aile bireylerine ait fotoğraflar, gerçek ses kayıtları ve günlük rutinleri Supabase'e kaydedilir.</div></li>
+            <li><div class="step-num" style="background:#3d6a6f">2</div><div><b>Arka Plan Geofencing:</b> Cihaz kilitli olsa bile, Expo Location ve Haversine formülü ile hastanın anlık konumu aralıksız ölçülür.</div></li>
+            <li><div class="step-num" style="background:#3d6a6f">3</div><div><b>Bilişsel Egzersiz:</b> Eklenen fotoğraflar kullanılarak, Fisher-Yates ile dinamikleştirilen kişiselleştirilmiş hafıza oyunları oynatılır.</div></li>
+            <li><div class="step-num" style="background:#3d6a6f">4</div><div><b>Analiz & Raporlama:</b> Hastanın rutin başarı oranları (compliance) ve egzersiz skorları işlenerek bakıcı ekranına yansıtılır.</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card expand">
+        <div class="card-header bg-green">🧩 Geliştirilen Ana Modüller</div>
+        <div class="card-body">
+          <div class="mod-block">
+            <div><span class="mod-icon">🖼️</span><span class="mod-title">Aile Albümü & Medya Oynatıcı</span></div>
+            <div class="mod-text">Yüksek kaliteli ses kayıtları ve fotoğrafların entegrasyonuyla, hastaya ailesinin sesini ve yüzünü sunan, anımsama terapisini (Reminiscence) merkeze alan medya ekosistemi.</div>
+          </div>
+          <div class="mod-block">
+            <div><span class="mod-icon">📍</span><span class="mod-title">Güvenlik ve Çit (Geofence)</span></div>
+            <div class="mod-text">Hastanın tanımlanan ev konumundan 100 metreden fazla uzaklaşması durumunda arka plan servislerinin uyanarak bakıcıya SMS/Push Notification gönderdiği batarya-dostu güvenlik çemberi.</div>
+          </div>
+          <div class="mod-block">
+            <div><span class="mod-icon">⏰</span><span class="mod-title">Rutin & İlaç Hatırlatıcıları</span></div>
+            <div class="mod-text">Günün saatlerine göre parçalara bölünmüş ilaç ve yemek bildirimleri. Hastanın zaman körlüğü (time blindness) yaşamasını engelleyen günlük döngü asistanı.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SAĞ KOLON -->
+    <div class="col">
+      <div class="card">
+        <div class="card-header bg-brown">🏛️ Sistem Mimarisi ve Veritabanı</div>
+        <div class="card-body">
+          <div class="arch-box">
+            <div class="arch-title">Sunum Katmanı (React Native)</div>
+            <div class="arch-sub">WCAG Uyumlu Komponentler • Yüksek Zıtlık Oranları</div>
+          </div>
+          <div class="arch-box">
+            <div class="arch-title">İş Mantığı Katmanı (Controllers)</div>
+            <div class="arch-sub">React Context API • Hooks • Arka Plan Servisleri</div>
+          </div>
+          <div class="arch-box" style="margin-bottom: 3mm;">
+            <div class="arch-title">Veri Katmanı (Supabase & Yerel)</div>
+            <div class="arch-sub">PostgreSQL • Supabase Storage • AsyncStorage Cache</div>
+          </div>
+          <p style="font-size:8.5pt; margin-bottom: 1.5mm;"><b>Veritabanı Şeması:</b></p>
+          <ul class="step-list">
+            <li><div class="step-num" style="width:12px;height:12px;font-size:6pt;background:#8b6b4e;margin-top:2px;"></div><div><b style="color:#8b6b4e">profiles:</b> Kullanıcı, acil rehber ve ev konumu.</div></li>
+            <li><div class="step-num" style="width:12px;height:12px;font-size:6pt;background:#8b6b4e;margin-top:2px;"></div><div><b style="color:#8b6b4e">memory_cards:</b> Görsel URI'leri ve ilişkili sesler.</div></li>
+            <li><div class="step-num" style="width:12px;height:12px;font-size:6pt;background:#8b6b4e;margin-top:2px;"></div><div><b style="color:#8b6b4e">routines:</b> Saatli görevler ve logları.</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header bg-teal">📐 Çekirdek Algoritmalar</div>
+        <div class="card-body">
+          <div class="algo-title">Fisher-Yates (Knuth) Shuffle — O(N)</div>
+          <div class="code-box">for i = N-1 → 1:
+  j = rand(0, i)
+  swap( a[i], a[j] )</div>
+          <p style="font-size:8pt; margin-bottom: 2.5mm;">Hafıza oyununda seçeneklerin ezberlenmesini ve tahminlerin taraflı (biased) olmasını engellemek için diziyi mükemmel rastgelelikle karar.</p>
+
+          <div class="algo-title">Haversine (Jeodezik Mesafe) Formülü</div>
+          <div class="code-box">d = 2R · arcsin( √( sin²(Δφ/2) + ... ) )</div>
+          <p style="font-size:8pt;">Dünya'nın eğriliğini hesaba katarak, hastanın evine uzaklığını hatasız ölçer ve sanal çit ihlalini saptar.</p>
+        </div>
+      </div>
+
+      <div class="card expand">
+        <div class="card-header bg-green">📚 Literatür ve Sonuç</div>
+        <div class="card-body">
+          <ul class="step-list">
+            <li><div class="step-num" style="background:#264a40">•</div><div><b>CST (Spector vd., 2003):</b> Bilişsel Stimülasyon Terapisi, demans hastalarında klinik iyileşme sağlar.</div></li>
+            <li><div class="step-num" style="background:#264a40">•</div><div><b>Kayıp Riski (Altus vd., 2000):</b> Demans hastalarının %60'ından fazlası wandering (kaybolma) eğilimi gösterir. GPS izleme zaruridir.</div></li>
+          </ul>
+          <p style="margin-top: 2.5mm; font-size: 8pt;"><b>Sonuç:</b> Memento; bilişsel terapiyi ve fiziksel güvenliği başarılı bir şekilde <b>çevrimdışı ve hepsi-bir-arada</b> ekosistemde birleştiren stabil bir mHealth asistanıdır.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    ✉ mehrdadshomali@nku.edu.tr &nbsp;&nbsp;|&nbsp;&nbsp; 🔗 github.com/mehrdadshomali/memento--app &nbsp;&nbsp;|&nbsp;&nbsp; Memento · Lisans Bitirme Projesi 2026
+  </div>
+
+</body>
+</html>

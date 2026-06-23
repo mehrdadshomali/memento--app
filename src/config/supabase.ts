@@ -31,73 +31,96 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-// Database types
+// Database types matching the new schema
 export interface Database {
   public: {
     Tables: {
       profiles: {
         Row: {
           id: string;
-          user_id: string;
+          user_id: string | null;
           name: string;
-          age: number;
-          diagnosis: string;
           avatar_url: string | null;
           created_at: string;
-          updated_at: string;
         };
-        Insert: Omit<Database['public']['Tables']['profiles']['Row'], 'id' | 'created_at' | 'updated_at'>;
+        Insert: Omit<Database['public']['Tables']['profiles']['Row'], 'id' | 'created_at'>;
         Update: Partial<Database['public']['Tables']['profiles']['Insert']>;
       };
-      memories: {
+      memory_cards: {
         Row: {
           id: string;
           profile_id: string;
-          title: string;
-          description: string;
-          media_url: string | null;
-          media_type: 'photo' | 'video' | 'audio';
+          type: 'visual' | 'audio';
+          correct_label: string;
+          hint: string | null;
+          relation: string | null;
+          note: string | null;
+          is_video: boolean;
+          image_url: string | null;
+          audio_url: string | null;
           created_at: string;
         };
-        Insert: Omit<Database['public']['Tables']['memories']['Row'], 'id' | 'created_at'>;
-        Update: Partial<Database['public']['Tables']['memories']['Insert']>;
+        Insert: Omit<Database['public']['Tables']['memory_cards']['Row'], 'id' | 'created_at'>;
+        Update: Partial<Database['public']['Tables']['memory_cards']['Insert']>;
       };
       routines: {
         Row: {
           id: string;
           profile_id: string;
           title: string;
+          description: string | null;
+          category: 'medication' | 'meal' | 'exercise' | 'appointment' | 'hygiene' | 'social' | 'other' | null;
           time: string;
-          days: string[];
-          reminder_enabled: boolean;
+          days: number[];
+          is_enabled: boolean;
+          icon: string | null;
+          color: string | null;
+          image_uri: string | null;
           created_at: string;
         };
         Insert: Omit<Database['public']['Tables']['routines']['Row'], 'id' | 'created_at'>;
         Update: Partial<Database['public']['Tables']['routines']['Insert']>;
       };
-      locations: {
+      routine_completions: {
         Row: {
           id: string;
+          routine_id: string;
           profile_id: string;
-          latitude: number;
-          longitude: number;
-          timestamp: string;
-          accuracy: number | null;
+          completed_at: string;
+          date: string;
         };
-        Insert: Omit<Database['public']['Tables']['locations']['Row'], 'id'>;
-        Update: Partial<Database['public']['Tables']['locations']['Insert']>;
+        Insert: Omit<Database['public']['Tables']['routine_completions']['Row'], 'id' | 'completed_at'>;
+        Update: Partial<Database['public']['Tables']['routine_completions']['Insert']>;
       };
-      caregivers: {
+      safety_profiles: {
         Row: {
           id: string;
-          user_id: string;
           profile_id: string;
-          relationship: string;
-          permissions: string[];
-          created_at: string;
+          full_name: string | null;
+          phone_number: string | null;
+          emergency_contact: string | null;
+          home_latitude: number | null;
+          home_longitude: number | null;
+          home_address: string | null;
+          home_name: string | null;
+          is_monitoring_enabled: boolean;
+          reminder_interval_minutes: number;
         };
-        Insert: Omit<Database['public']['Tables']['caregivers']['Row'], 'id' | 'created_at'>;
-        Update: Partial<Database['public']['Tables']['caregivers']['Insert']>;
+        Insert: Omit<Database['public']['Tables']['safety_profiles']['Row'], 'id'>;
+        Update: Partial<Database['public']['Tables']['safety_profiles']['Insert']>;
+      };
+      game_sessions: {
+        Row: {
+          id: string;
+          profile_id: string;
+          total_cards: number | null;
+          correct_answers: number | null;
+          total_attempts: number | null;
+          duration_seconds: number | null;
+          completed_at: string;
+        };
+        Insert: Omit<Database['public']['Tables']['game_sessions']['Row'], 'id' | 'completed_at'>;
+        Update: Partial<Database['public']['Tables']['game_sessions']['Insert']>;
       };
     };
   };

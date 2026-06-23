@@ -1,14 +1,19 @@
 /**
  * Memento - Supabase Service Layer
- * Profil ve kart verilerini Supabase ile senkronize eder.
- * Env değişkenleri (.env dosyası) ayarlanmadan önce offline (AsyncStorage) modunda çalışır.
+ * Supabase ile iletişim kuran veritabanı fonksiyonları.
  */
 
-import { supabase } from './supabase';
+import { supabase, Database } from './supabase';
+import * as FileSystem from 'expo-file-system';
+import { decode } from 'base64-arraybuffer';
 
-// ─────────────────────────────────────────────────────────────
-// Env kontrolü: Supabase yapılandırılmış mı?
-// ─────────────────────────────────────────────────────────────
+type ProfileInsert = Database['public']['Tables']['profiles']['Insert'];
+type MemoryCardInsert = Database['public']['Tables']['memory_cards']['Insert'];
+type RoutineInsert = Database['public']['Tables']['routines']['Insert'];
+type RoutineCompletionInsert = Database['public']['Tables']['routine_completions']['Insert'];
+type SafetyProfileInsert = Database['public']['Tables']['safety_profiles']['Insert'];
+type GameSessionInsert = Database['public']['Tables']['game_sessions']['Insert'];
+
 export const isSupabaseConfigured = (): boolean => {
   const url = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
   const key = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -16,203 +21,153 @@ export const isSupabaseConfigured = (): boolean => {
 };
 
 // ─────────────────────────────────────────────────────────────
-// AUTH
-// ─────────────────────────────────────────────────────────────
-
-export const signUpWithEmail = async (email: string, password: string) => {
-  const { data, error } = await supabase.auth.signUp({ email, password });
-  if (error) throw error;
-  return data;
-};
-
-export const signInWithEmail = async (email: string, password: string) => {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) throw error;
-  return data;
-};
-
-export const signOut = async () => {
-  const { error } = await supabase.auth.signOut();
-  if (error) throw error;
-};
-
-export const getCurrentUser = async () => {
-  const { data: { user } } = await supabase.auth.getUser();
-  return user;
-};
-
-// ─────────────────────────────────────────────────────────────
 // PROFILES
 // ─────────────────────────────────────────────────────────────
-
-export const getProfileFromSupabase = async (userId: string) => {
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('user_id', userId)
-    .single();
-  
+export const getProfilesFromSupabase = async () => {
+  const { data, error } = await supabase.from('profiles').select('*');
   if (error) throw error;
   return data;
 };
 
-export const createProfileInSupabase = async (userId: string, name: string) => {
-  const { data, error } = await supabase
-    .from('profiles')
-    .insert({ user_id: userId, name })
-    .select()
-    .single();
-  
+export const createProfileInSupabase = async (profile: ProfileInsert) => {
+  const { data, error } = await supabase.from('profiles').insert(profile).select().single();
   if (error) throw error;
   return data;
 };
 
-export const updateProfileInSupabase = async (userId: string, updates: { name?: string }) => {
-  const { data, error } = await supabase
-    .from('profiles')
-    .update(updates)
-    .eq('user_id', userId)
-    .select()
-    .single();
-  
+export const deleteProfileFromSupabase = async (profileId: string) => {
+  const { error } = await supabase.from('profiles').delete().eq('id', profileId);
   if (error) throw error;
-  return data;
 };
 
 // ─────────────────────────────────────────────────────────────
-// MEMORIES (Cards)
+// MEMORY CARDS
 // ─────────────────────────────────────────────────────────────
-
-export const getMemoriesFromSupabase = async (profileId: string) => {
+export const getMemoryCardsFromSupabase = async (profileId: string) => {
   const { data, error } = await supabase
-    .from('memories')
+    .from('memory_cards')
     .select('*')
     .eq('profile_id', profileId)
     .order('created_at', { ascending: false });
-  
   if (error) throw error;
   return data;
 };
 
-export const addMemoryToSupabase = async (profileId: string, memory: {
-  title: string;
-  description?: string;
-  media_url?: string;
-  media_type: 'photo' | 'video' | 'audio';
-}) => {
-  const { data, error } = await supabase
-    .from('memories')
-    .insert({ profile_id: profileId, ...memory })
-    .select()
-    .single();
-  
+export const addMemoryCardToSupabase = async (card: MemoryCardInsert) => {
+  const { data, error } = await supabase.from('memory_cards').insert(card).select().single();
   if (error) throw error;
   return data;
 };
 
-export const deleteMemoryFromSupabase = async (memoryId: string) => {
-  const { error } = await supabase
-    .from('memories')
-    .delete()
-    .eq('id', memoryId);
-  
+export const deleteMemoryCardFromSupabase = async (cardId: string) => {
+  const { error } = await supabase.from('memory_cards').delete().eq('id', cardId);
   if (error) throw error;
 };
 
-// ─────────────────────────────────────────────────────────────
-// MEDIA UPLOAD (Supabase Storage)
-// ─────────────────────────────────────────────────────────────
+export const updateMemoryCardInSupabase = async (cardId: string, updates: Partial<MemoryCardInsert>) => {
+  const { data, error } = await supabase.from('memory_cards').update(updates).eq('id', cardId).select().single();
+  if (error) throw error;
+  return data;
+};
 
+// ─────────────────────────────────────────────────────────────
+// MEDIA UPLOAD
+// ─────────────────────────────────────────────────────────────
 export const uploadMediaToSupabase = async (
-  userId: string,
+  profileId: string,
   uri: string,
   mediaType: 'photo' | 'audio',
   fileName?: string
 ): Promise<string> => {
-  const ext = mediaType === 'photo' ? 'jpg' : 'mp3';
+  const uriParts = uri.split('.');
+  const extFromUri = uriParts[uriParts.length - 1];
+  const ext = mediaType === 'photo' ? 'jpg' : (extFromUri === 'm4a' ? 'm4a' : 'm4a');
   const name = fileName || `${Date.now()}.${ext}`;
-  const path = `${userId}/${name}`;
+  const path = `${profileId}/${name}`;
 
-  // URI'yi blob'a çevir
-  const response = await fetch(uri);
-  const blob = await response.blob();
+  let uploadData: any;
+  if (uri.startsWith('file://')) {
+    const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+    uploadData = decode(base64);
+  } else {
+    const response = await fetch(uri);
+    uploadData = await response.blob();
+  }
 
-  const { data, error } = await supabase.storage
-    .from('memories')
-    .upload(path, blob, {
-      contentType: mediaType === 'photo' ? 'image/jpeg' : 'audio/mpeg',
-      upsert: false,
-    });
+  const { data, error } = await supabase.storage.from('memories').upload(path, uploadData, {
+    contentType: mediaType === 'photo' ? 'image/jpeg' : 'audio/mp4', // mp4/m4a MIME type
+    upsert: false,
+  });
 
   if (error) throw error;
 
-  const { data: urlData } = supabase.storage
-    .from('memories')
-    .getPublicUrl(data.path);
-
+  const { data: urlData } = supabase.storage.from('memories').getPublicUrl(data.path);
   return urlData.publicUrl;
 };
 
 // ─────────────────────────────────────────────────────────────
 // ROUTINES
 // ─────────────────────────────────────────────────────────────
-
 export const getRoutinesFromSupabase = async (profileId: string) => {
-  const { data, error } = await supabase
-    .from('routines')
-    .select('*')
-    .eq('profile_id', profileId)
-    .order('time', { ascending: true });
-  
+  const { data, error } = await supabase.from('routines').select('*').eq('profile_id', profileId);
   if (error) throw error;
   return data;
 };
 
-export const addRoutineToSupabase = async (profileId: string, routine: {
-  title: string;
-  time: string;
-  days: string[];
-  reminder_enabled?: boolean;
-}) => {
-  const { data, error } = await supabase
-    .from('routines')
-    .insert({ profile_id: profileId, ...routine })
-    .select()
-    .single();
-  
+export const addRoutineToSupabase = async (routine: RoutineInsert) => {
+  const { data, error } = await supabase.from('routines').insert(routine).select().single();
   if (error) throw error;
   return data;
 };
 
 export const deleteRoutineFromSupabase = async (routineId: string) => {
-  const { error } = await supabase
-    .from('routines')
-    .delete()
-    .eq('id', routineId);
-  
+  const { error } = await supabase.from('routines').delete().eq('id', routineId);
   if (error) throw error;
 };
 
 // ─────────────────────────────────────────────────────────────
-// LOCATION LOGGING (Supabase'e konum kaydet)
+// ROUTINE COMPLETIONS
 // ─────────────────────────────────────────────────────────────
+export const getRoutineCompletionsFromSupabase = async (profileId: string, date: string) => {
+  const { data, error } = await supabase
+    .from('routine_completions')
+    .select('*')
+    .eq('profile_id', profileId)
+    .eq('date', date);
+  if (error) throw error;
+  return data;
+};
 
-export const logLocationToSupabase = async (
-  profileId: string,
-  latitude: number,
-  longitude: number,
-  accuracy?: number
-) => {
-  const { error } = await supabase
-    .from('locations')
-    .insert({
-      profile_id: profileId,
-      latitude,
-      longitude,
-      accuracy: accuracy || null,
-    });
-  
-  if (error) {
-    console.log('Location log error (non-critical):', error.message);
-  }
+export const addRoutineCompletionToSupabase = async (completion: RoutineCompletionInsert) => {
+  const { data, error } = await supabase.from('routine_completions').insert(completion).select().single();
+  if (error) throw error;
+  return data;
+};
+
+// ─────────────────────────────────────────────────────────────
+// SAFETY PROFILE
+// ─────────────────────────────────────────────────────────────
+export const getSafetyProfileFromSupabase = async (profileId: string) => {
+  const { data, error } = await supabase.from('safety_profiles').select('*').eq('profile_id', profileId).single();
+  if (error && error.code !== 'PGRST116') throw error; // PGRST116 = not found
+  return data;
+};
+
+export const upsertSafetyProfileInSupabase = async (safetyProfile: SafetyProfileInsert) => {
+  const { data, error } = await supabase
+    .from('safety_profiles')
+    .upsert(safetyProfile, { onConflict: 'profile_id' })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};
+
+// ─────────────────────────────────────────────────────────────
+// GAME SESSIONS
+// ─────────────────────────────────────────────────────────────
+export const addGameSessionToSupabase = async (session: GameSessionInsert) => {
+  const { data, error } = await supabase.from('game_sessions').insert(session).select().single();
+  if (error) throw error;
+  return data;
 };

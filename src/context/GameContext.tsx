@@ -6,6 +6,8 @@
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppState, GameAction, GameSession, UserProgress, CardType } from '../types';
+import { useProfile } from './ProfileContext';
+import { addGameSessionToSupabase, isSupabaseConfigured } from '../config/supabaseService';
 
 const initialProgress: UserProgress = {
   totalSessions: 0,
@@ -128,6 +130,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const { currentProfile } = useProfile();
+  
   const startGame = (gameType: CardType, totalCards: number) => {
     dispatch({ type: 'START_GAME', payload: { gameType, totalCards } });
   };
@@ -135,7 +139,21 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const nextCard = () => dispatch({ type: 'NEXT_CARD' });
   const recordCorrectAnswer = () => dispatch({ type: 'CORRECT_ANSWER' });
   const incrementAttempt = () => dispatch({ type: 'INCREMENT_ATTEMPT' });
-  const endGame = () => dispatch({ type: 'END_GAME' });
+  
+  const endGame = () => {
+    if (state.currentSession && currentProfile && isSupabaseConfigured()) {
+      const duration = Math.floor((new Date().getTime() - state.currentSession.startTime.getTime()) / 1000);
+      addGameSessionToSupabase({
+        profile_id: currentProfile.id,
+        total_cards: state.currentSession.totalCards,
+        correct_answers: state.currentSession.correctAnswers,
+        total_attempts: state.currentSession.attempts,
+        duration_seconds: duration,
+      }).catch(e => console.log('Error saving game session to supabase:', e));
+    }
+    dispatch({ type: 'END_GAME' });
+  };
+  
   const resetGame = () => dispatch({ type: 'RESET_GAME' });
 
   return (

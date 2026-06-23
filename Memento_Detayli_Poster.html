@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Memento - Detaylı Akademik Poster</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap');
+
+    @page {
+      size: 297mm 420mm; /* A3 Dikey */
+      margin: 0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 297mm;
+      height: 420mm;
+      font-family: 'Inter', -apple-system, sans-serif;
+      color: #1f2937;
+      background: #f8fafc;
+      overflow: hidden;
+    }
+
+    .poster {
+      width: 297mm;
+      height: 420mm;
+      padding: 10mm;
+      display: flex;
+      flex-direction: column;
+      gap: 6mm;
+    }
+
+    /* HEADER */
+    .header {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border-radius: 16px;
+      padding: 10mm;
+      color: white;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      top: -50px; right: -50px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(56,189,248,0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4mm;
+      font-size: 9pt;
+      color: #94a3b8;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .title {
+      font-family: 'Playfair Display', serif;
+      font-size: 34pt;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 2mm;
+      color: #f8fafc;
+    }
+    .subtitle {
+      font-size: 13pt;
+      color: #38bdf8;
+      font-weight: 500;
+      margin-bottom: 5mm;
+      max-width: 80%;
+    }
+    .authors-container {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 4mm;
+    }
+    .author-block h4 { font-size: 8pt; color: #64748b; margin-bottom: 1mm; }
+    .author-list { font-size: 9pt; font-weight: 500; }
+    .author-list span { color: #e2e8f0; margin-right: 3mm; }
+    .author-list span b { color: #fff; }
+
+    /* GRID LAYOUT */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6mm;
+      flex: 1;
+    }
+    .col {
+      display: flex;
+      flex-direction: column;
+      gap: 6mm;
+    }
+
+    /* CARDS */
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 6mm;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+      border: 1px solid #e2e8f0;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 3mm;
+      margin-bottom: 4mm;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 2mm;
+    }
+    .card-icon {
+      width: 32px; height: 32px;
+      background: #e0f2fe;
+      color: #0284c7;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14pt; font-weight: bold;
+    }
+    .card-title {
+      font-size: 14pt;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .card-text {
+      font-size: 8.5pt;
+      line-height: 1.6;
+      color: #475569;
+      text-align: justify;
+    }
+    .card-text p { margin-bottom: 2mm; }
+    .highlight { color: #0284c7; font-weight: 700; }
+
+    /* ARCHITECTURE DIAGRAM */
+    .arch-diagram {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 4mm;
+      margin-top: 3mm;
+      display: flex;
+      flex-direction: column;
+      gap: 3mm;
+    }
+    .arch-layer {
+      background: white;
+      border: 1px solid #cbd5e1;
+      padding: 3mm;
+      border-radius: 6px;
+      text-align: center;
+      position: relative;
+    }
+    .arch-layer::after {
+      content: '↓';
+      position: absolute;
+      bottom: -4mm; left: 50%;
+      transform: translateX(-50%);
+      color: #94a3b8;
+      font-weight: bold;
+      font-size: 12pt;
+    }
+    .arch-layer:last-child::after { display: none; }
+    .arch-title { font-weight: 800; font-size: 9pt; color: #1e293b; }
+    .arch-desc { font-size: 7.5pt; color: #64748b; margin-top: 1mm; }
+
+    /* ALGORITHM BOXES */
+    .algo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3mm;
+      margin-top: 3mm;
+    }
+    .algo-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 4mm;
+    }
+    .algo-name { font-size: 10pt; font-weight: 800; color: #1d4ed8; margin-bottom: 1mm; }
+    .algo-desc { font-size: 7.5pt; color: #3b82f6; line-height: 1.5; }
+
+    /* LISTS */
+    .feature-list { list-style: none; margin-top: 3mm; }
+    .feature-list li {
+      font-size: 8.5pt;
+      color: #334155;
+      padding: 1.5mm 0;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      align-items: flex-start;
+      gap: 2mm;
+    }
+    .feature-list li::before {
+      content: '✓';
+      color: #10b981;
+      font-weight: bold;
+    }
+
+    /* SCREENSHOT PLACEHOLDERS */
+    .ss-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4mm;
+      margin-top: 4mm;
+    }
+    .ss-box {
+      background: #f1f5f9;
+      border: 2px dashed #cbd5e1;
+      border-radius: 8px;
+      height: 70mm;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4mm;
+    }
+    .ss-box.large { height: 90mm; }
+    .ss-icon { font-size: 24pt; color: #94a3b8; margin-bottom: 2mm; }
+    .ss-text { font-size: 8pt; font-weight: 600; color: #64748b; }
+
+    .footer {
+      text-align: center;
+      font-size: 8pt;
+      color: #94a3b8;
+      margin-top: 2mm;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+<div class="poster">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <span>Tekirdağ Namık Kemal Üniversitesi</span>
+      <span>Bilgisayar Mühendisliği Bölümü Bitirme Projesi</span>
+    </div>
+    <div class="title">MEMENTO: Alzheimer Hastaları İçin Terapötik Hafıza Egzersiz Mobil Uygulaması</div>
+    <div class="subtitle">Bilişsel rehabilitasyon, GPS tabanlı konum güvenliği ve günlük rutin yönetimini birleştiren hepsi-bir-arada mHealth ekosistemi.</div>
+    
+    <div class="authors-container">
+      <div class="author-block">
+        <h4>PROJE EKİBİ</h4>
+        <div class="author-list">
+          <span><b>Mehrdad Shomali</b> (2210656637)</span>
+          <span><b>Kerim Can Güzel</b> (2220656047)</span>
+          <span><b>Efekan Çetin</b> (2220656034)</span>
+        </div>
+      </div>
+      <div class="author-block" style="text-align: right;">
+        <h4>DANIŞMAN</h4>
+        <div class="author-list">
+          <span><b>Dr. Öğr. Üyesi Erkan Özhan</b></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT GRID -->
+  <div class="grid">
+    
+    <!-- LEFT COLUMN -->
+    <div class="col">
+      
+      <!-- PROBLEM VE MOTIVASYON -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">01</div>
+          <div class="card-title">Problem ve Motivasyon</div>
+        </div>
+        <div class="card-text">
+          <p>Dünya Sağlık Örgütü verilerine göre dünya genelinde <b>55 milyon</b> demans hastası bulunmaktadır ve bu hastaların %60-70'ini Alzheimer oluşturmaktadır. Alzheimer, bilişsel yıkımın yanı sıra hafıza kaybı, mekânsal yönelim bozukluğu (kaybolma riski) ve günlük ilaç/yemek rutinlerini unutma gibi hayati riskler taşır.</p>
+          <p>Mevcut piyasadaki mobil sağlık (mHealth) uygulamaları çoğunlukla tek bir özelliğe odaklanmakta (sadece konum takibi veya sadece oyun) ve arayüzleri yaşlı kullanıcılar için <b>fazla karmaşık</b> olmaktadır. Bu proje, hastanın tüm ihtiyaçlarını tek bir çatı altında toplayan, kullanımı son derece basit, erişilebilir bir ekosistem yaratmayı amaçlamaktadır.</p>
+        </div>
+      </div>
+
+      <!-- SISTEM MIMARISI -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">02</div>
+          <div class="card-title">Sistem Mimarisi ve Teknolojiler</div>
+        </div>
+        <div class="card-text">
+          <p>Proje, <b>React Native</b> ve <b>Expo SDK</b> kullanılarak iOS ve Android platformları için çapraz (cross-platform) mimaride geliştirilmiştir. Uygulamanın <span class="highlight">çevrimdışı (offline-first)</span> çalışabilmesi kritik bir gereksinim olduğundan, veriler cihazda yerel olarak saklanmakta ve internet bağlantısı olduğunda bulut ile senkronize olmaktadır.</p>
+          
+          <div class="arch-diagram">
+            <div class="arch-layer">
+              <div class="arch-title">Sunum Katmanı (UI/UX)</div>
+              <div class="arch-desc">React Native UI, WCAG AA Standartları, Min 48px Dokunma Hedefleri</div>
+            </div>
+            <div class="arch-layer">
+              <div class="arch-title">İş Mantığı ve State Yönetimi</div>
+              <div class="arch-desc">React Context API (ProfileContext, GameContext), Custom Hooks</div>
+            </div>
+            <div class="arch-layer">
+              <div class="arch-title">Arka Plan ve Donanım Servisleri</div>
+              <div class="arch-desc">Expo Location (GPS), Expo Task Manager, Expo Notifications</div>
+            </div>
+            <div class="arch-layer">
+              <div class="arch-title">Veri Katmanı</div>
+              <div class="arch-desc">AsyncStorage (Yerel Önbellek) ve Supabase (Bulut Veritabanı & Medya)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÇEKIRDEK ALGORITMALAR -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">03</div>
+          <div class="card-title">Çekirdek Algoritmalar</div>
+        </div>
+        <div class="card-text">
+          <p>Sistemin güvenilirliğini ve oyunların dinamikliğini sağlamak amacıyla spesifik algoritmalar projeye entegre edilmiştir.</p>
+          <div class="algo-grid">
+            <div class="algo-box">
+              <div class="algo-name">📍 Haversine Formülü (Güvenlik)</div>
+              <div class="algo-desc">Dünya üzerindeki iki nokta (Evin konumu ve hastanın anlık konumu) arasındaki kuş uçuşu mesafeyi hesaplar. Hastanın evden <b>100 metre</b> uzaklaşması durumunda arka plan tetikleyicisi (Background Task) devreye girerek uyarı fırlatır.</div>
+            </div>
+            <div class="algo-box">
+              <div class="algo-name">🔀 Fisher-Yates (Hafıza Oyunları)</div>
+              <div class="algo-desc">O(N) zaman karmaşıklığı ile çalışan bu algoritma, hafıza kartlarının ve oyun seçeneklerinin her oturumda adil ve tamamen rastgele (unbiased) karıştırılmasını sağlayarak oyunun ezberlenmesini engeller.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="col">
+
+      <!-- UYGULAMA MODULLERI -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">04</div>
+          <div class="card-title">Geliştirilen Modüller ve Özellikler</div>
+        </div>
+        <div class="card-text">
+          <ul class="feature-list">
+            <li><b>Bilişsel Rehabilitasyon Oyunları:</b> Hastanın kendi aile bireylerinin yüzleri ve sesleri kullanılarak hazırlanan, anlık geri bildirimli özelleştirilmiş eşleştirme egzersizleri.</li>
+            <li><b>Kesintisiz Konum Takibi:</b> Uygulama arka plana atıldığında veya cihaz kilitliyken dahi çalışan, batarya optimizasyonlu (15 dk / 50 metre filtresi) güvenlik çiti sistemi.</li>
+            <li><b>Günlük Rutin ve Hatırlatıcılar:</b> İlaç ve yemek saatleri için cihaz içi bildirimler (Local Notifications) oluşturarak hastanın günlük yaşamını düzenler.</li>
+            <li><b>Aile Albümü ve Sesli Medya:</b> Yüksek kaliteli (.m4a) ses kayıt altyapısı sayesinde hastanın anılarını dinleyip görsellerle duygusal bağ kurmasını sağlayan multimedya modülü.</li>
+            <li><b>Bakıcı Analitik Paneli:</b> Tamamlanan rutinleri ve oyun skorlarını toplayarak hastanın gelişimini izlemeye olanak tanıyan veri görselleştirme arayüzü.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- GÖRSELLER (EKRAN GÖRÜNTÜLERİ İÇİN ALAN) -->
+      <div class="card" style="flex: 1;">
+        <div class="card-header">
+          <div class="card-icon">05</div>
+          <div class="card-title">Uygulama Arayüzleri</div>
+        </div>
+        <div class="card-text">
+          <p>Uygulamanın arayüz tasarımında erişilebilirlik (Accessibility) ön planda tutulmuş, yaşlı gözler için yormayan <b>pastel renk paletleri</b> ve okunaklı <b>büyük tipografik</b> unsurlar kullanılmıştır.</p>
+          
+          <div class="ss-container">
+            <div class="ss-box large">
+              <div class="ss-icon">📱</div>
+              <div class="ss-text">Ana Ekran / Rutinler<br><span style="font-size:6pt; font-weight:400; color:#94a3b8;">(Buraya HomeScreen.png ekleyin)</span></div>
+            </div>
+            <div class="ss-box large">
+              <div class="ss-icon">🧠</div>
+              <div class="ss-text">Hafıza Egzersizi Oyunu<br><span style="font-size:6pt; font-weight:400; color:#94a3b8;">(Buraya GameScreen.png ekleyin)</span></div>
+            </div>
+            <div class="ss-box">
+              <div class="ss-icon">📍</div>
+              <div class="ss-text">Güvenlik ve Harita<br><span style="font-size:6pt; font-weight:400; color:#94a3b8;">(Buraya MapScreen.png ekleyin)</span></div>
+            </div>
+            <div class="ss-box">
+              <div class="ss-icon">🖼️</div>
+              <div class="ss-text">Aile Albümü<br><span style="font-size:6pt; font-weight:400; color:#94a3b8;">(Buraya AlbumScreen.png ekleyin)</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SONUÇ -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">06</div>
+          <div class="card-title">Sonuç ve Gelecek Çalışmalar</div>
+        </div>
+        <div class="card-text">
+          <p>MEMENTO, piyasadaki dağınık uygulamaların aksine, Alzheimer hastalarının <b>güvenliğini, psikolojisini ve bilişsel yetilerini</b> tek bir noktadan yöneten kapsayıcı bir mühendislik ürünüdür. Arka plan servisleri ve çevrimdışı mimari başarılı bir şekilde entegre edilmiştir.</p>
+          <p><b>Gelecek Çalışmalar:</b> Akıllı saatlerle (Apple Watch/WearOS) entegre edilerek hastanın nabız ve düşme sensörü verilerinin anlık olarak bakıcıya iletilmesi ve makine öğrenmesi algoritmalarıyla günlük duygu durumu analizi yapılması planlanmaktadır.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    Bu akademik proje çalışması Tekirdağ Namık Kemal Üniversitesi Çorlu Mühendislik Fakültesinde gerçekleştirilmiştir. | 2026
+  </div>
+
+</div>
+
+</body>
+</html>

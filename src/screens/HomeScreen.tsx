@@ -19,6 +19,8 @@ import {
   StatusBar,
   ScrollView,
   Animated,
+  Alert,
+  Linking,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { GradientCard, ProgressRing } from '../components';
@@ -186,6 +188,35 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
               iconBackground={COLORS.accentMuted}
               onPress={() => navigation.navigate('VoiceMessages')}
             />
+          </View>
+
+          {/* Emergency SOS */}
+          <View style={styles.section}>
+            <TouchableOpacity
+              style={styles.sosButton}
+              activeOpacity={0.8}
+              onPress={() => {
+                Alert.alert(
+                  language === 'tr' ? 'ACİL DURUM (SOS)' : 'EMERGENCY (SOS)',
+                  language === 'tr' ? 'Acil durum kişisini aramak istediğinize emin misiniz?' : 'Are you sure you want to call your emergency contact?',
+                  [
+                    { text: language === 'tr' ? 'İptal' : 'Cancel', style: 'cancel' },
+                    { text: language === 'tr' ? 'Ara' : 'Call', style: 'destructive', onPress: () => {
+                        const phone = safetyProfile?.emergencyContact || '112';
+                        Linking.openURL(`tel:${phone}`);
+                    }}
+                  ]
+                );
+              }}
+            >
+              <View style={styles.sosIconWrap}>
+                <Ionicons name="call" size={28} color="#FFF" />
+              </View>
+              <View>
+                <Text style={styles.sosTitle}>{language === 'tr' ? 'ACİL DURUM (SOS)' : 'EMERGENCY (SOS)'}</Text>
+                <Text style={styles.sosSubtitle}>{language === 'tr' ? "Acil durum kişisini arayın" : 'Call emergency contact'}</Text>
+              </View>
+            </TouchableOpacity>
           </View>
 
           {/* Management */}
@@ -379,6 +410,36 @@ const styles = StyleSheet.create({
     color: COLORS.textMuted,
     letterSpacing: FONTS.letterSpacing.widest,
     marginBottom: SPACING.md,
+  },
+
+  /* SOS Button */
+  sosButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#D32F2F',
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.xl,
+    ...SHADOWS.md,
+  },
+  sosIconWrap: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: SPACING.md,
+  },
+  sosTitle: {
+    fontSize: FONTS.sizes.lg,
+    fontWeight: FONTS.weights.bold,
+    color: '#FFF',
+    letterSpacing: 1,
+  },
+  sosSubtitle: {
+    fontSize: FONTS.sizes.sm,
+    color: 'rgba(255,255,255,0.8)',
+    marginTop: 2,
   },
 
   /* Grid */

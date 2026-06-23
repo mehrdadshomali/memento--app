@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Memento - Bitirme Projesi Raporu</title>
+<style>
+  @page {
+    size: A4;
+    margin: 3cm 2.5cm 2.5cm 3cm;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 12pt;
+    line-height: 1.5;
+    color: #000;
+    background: #fff;
+  }
+  .page-break { page-break-after: always; }
+  
+  /* Başlık Stilleri */
+  h1 { font-size: 14pt; font-weight: bold; text-transform: uppercase; margin-top: 24pt; margin-bottom: 12pt; text-align: center; }
+  h2 { font-size: 12pt; font-weight: bold; margin-top: 18pt; margin-bottom: 10pt; }
+  h3 { font-size: 12pt; font-weight: bold; margin-top: 14pt; margin-bottom: 8pt; font-style: italic; }
+  h4 { font-size: 12pt; font-weight: bold; margin-top: 12pt; margin-bottom: 6pt; }
+  
+  /* Paragraf Stilleri */
+  p { text-align: justify; margin-bottom: 12pt; text-indent: 1.25cm; }
+  p.no-indent { text-indent: 0; }
+  
+  /* Kapak Sayfası */
+  .cover-page {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 90vh; text-align: center; line-height: 1.5;
+  }
+  .cover-page h1 { font-size: 18pt; margin-bottom: 12pt; margin-top: 60pt; }
+  .cover-page h2 { font-size: 14pt; font-weight: normal; margin-bottom: 40pt; text-transform: none; }
+  .cover-page .uni { font-size: 14pt; font-weight: bold; margin-bottom: 4pt; }
+  .cover-page .dept { font-size: 12pt; margin-bottom: 40pt; }
+  .cover-page .student { font-size: 12pt; margin-top: 60pt; }
+  .cover-page .date { font-size: 12pt; margin-top: 40pt; }
+  
+  /* İçindekiler vb. Listeler */
+  .toc-title { font-size: 14pt; font-weight: bold; text-align: center; margin-bottom: 24pt; text-transform: uppercase; }
+  .toc-item { display: flex; justify-content: space-between; margin-bottom: 6pt; font-size: 12pt; }
+  .toc-item.level1 { font-weight: bold; margin-top: 12pt; }
+  .toc-item.level2 { padding-left: 1.25cm; }
+  .toc-item.level3 { padding-left: 2.5cm; }
+  .toc-dots { flex: 1; border-bottom: 1px dotted #000; margin: 0 4pt; position: relative; top: -4pt; }
+  
+  /* Profesyonel Akademik Tablo Tasarımı (APA/IEEE Stili) */
+  table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin: 24pt 0; 
+    font-size: 11pt; 
+    page-break-inside: avoid;
+    border-top: 2px solid #000;
+    border-bottom: 2px solid #000;
+  }
+  table th { 
+    border-bottom: 1px solid #000; 
+    padding: 8pt 10pt; 
+    text-align: left; 
+    font-weight: bold;
+    background-color: #f8f9fa;
+  }
+  table td { 
+    border-bottom: 1px solid #e0e0e0; 
+    padding: 8pt 10pt; 
+    text-align: left; 
+    vertical-align: top; 
+  }
+  table tr:last-child td {
+    border-bottom: none;
+  }
+  table caption { 
+    font-weight: bold; 
+    margin-bottom: 8pt; 
+    text-align: left; 
+    font-size: 11pt; 
+    color: #333;
+  }
+  
+  /* Şekiller ve Kod Blokları */
+  .figure-container { text-align: center; margin: 24pt 0; page-break-inside: avoid; }
+  .figure-caption { text-align: center; font-size: 11pt; margin-top: 10pt; font-weight: bold; }
+  .img-placeholder {
+    width: 280px; height: 500px; border: 2px dashed #999; margin: 0 auto; 
+    display: flex; align-items: center; justify-content: center; 
+    background: #f5f5f5; color: #666; font-weight: bold; text-align: center; padding: 20px;
+    border-radius: 12px;
+  }
+  
+  .code-block {
+    background: #f9f9f9; border: 1px solid #ccc; border-radius: 4px;
+    padding: 12pt; font-family: 'Courier New', Courier, monospace; font-size: 10pt;
+    overflow-x: auto; margin: 12pt 0; white-space: pre-wrap; line-height: 1.4;
+    page-break-inside: avoid;
+  }
+  
+  /* Listeler */
+  ul, ol { margin-left: 2cm; margin-bottom: 12pt; text-align: justify; }
+  ul li, ol li { margin-bottom: 6pt; }
+  
+  /* Mimari Kutu Çizimleri */
+  .architecture-box {
+    border: 1px solid #000; padding: 16pt; margin: 18pt 0; text-align: center;
+    background: #fff; page-break-inside: avoid;
+  }
+  .arch-row { display: flex; justify-content: center; gap: 12pt; margin: 10pt 0; flex-wrap: wrap; }
+  .arch-box {
+    border: 1px solid #000; padding: 10pt 16pt; font-size: 11pt;
+    font-weight: bold; min-width: 120pt; text-align: center; background: #f0f0f0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== KAPAK SAYFASI ==================== -->
+<div class="cover-page">
+  <p class="uni">T.C.<br>TEKİRDAĞ NAMIK KEMAL ÜNİVERSİTESİ</p>
+  <p class="dept">ÇORLU MÜHENDİSLİK FAKÜLTESİ<br>BİLGİSAYAR MÜHENDİSLİĞİ BÖLÜMÜ</p>
+  
+  <h1>MEMENTO: ALZHEİMER HASTALARI İÇİN TERAPÖTİK HAFIZA EGZERSİZ VE GÜVENLİK ODAKLI MOBİL UYGULAMA GELİŞTİRİLMESİ</h1>
+  
+  <p style="font-size:12pt; font-weight:bold; margin-top: 40pt;">LİSANS BİTİRME PROJESİ</p>
+  
+  <p class="student"><b>Hazırlayan</b><br>Mehrdad Shomali</p>
+  
+  <p class="date">Haziran 2026<br>TEKİRDAĞ</p>
+</div>
+<div class="page-break"></div>
+
+<!-- ==================== ÖNSÖZ ==================== -->
+<div class="toc-title">ÖNSÖZ</div>
+<p>Nörodejeneratif hastalıklar, modern tıbbın ve teknolojinin en çok çözüm aradığı alanlardan biridir. Günümüzde giderek yaşlanan dünya nüfusu ile birlikte Alzheimer hastalığının görülme sıklığı da hızla artmaktadır. Bu durum, sadece hastaları değil, aynı zamanda onlara bakım veren aile üyelerini de psikolojik, fiziksel ve sosyal olarak derinden etkilemektedir. Gelişen mobil teknolojiler, bu zorlu süreçte hem hastalara bilişsel destek sağlamak hem de bakıcıların yükünü hafifletmek adına büyük bir potansiyel taşımaktadır.</p>
+
+<p>Bu bitirme projesi kapsamında geliştirilen "Memento" adlı mobil uygulama, tamamen bu motivasyonla hayata geçirilmiştir. Uygulama, hastaların sevdikleriyle olan bağlarını korumalarına yardımcı olacak hafıza egzersizleri sunarken, aynı zamanda GPS tabanlı güvenlik özellikleri, günlük rutin hatırlatıcıları, ve bulut destekli veri senkronizasyonu ile yaşam kalitelerini artırmayı hedeflemektedir. Bu proje, bir yazılım mühendisliği çalışması olmasının yanı sıra, teknolojik bir ürünün insan hayatına nasıl dokunabileceğini göstermesi açısından da benim için büyük bir anlam ifade etmektedir.</p>
+
+<p>Projenin fikir aşamasından hayata geçirilmesine kadar olan tüm süreçlerde benden değerli bilgi ve birikimlerini esirgemeyen, vizyonu ile yolumu aydınlatan danışman hocama en içten teşekkürlerimi sunarım. Lisans eğitimim boyunca bana kattıkları değerler için Tekirdağ Namık Kemal Üniversitesi Bilgisayar Mühendisliği Bölümü'nün tüm saygıdeğer öğretim üyelerine şükranlarımı sunarım.</p>
+
+<p>Son olarak, eğitim hayatım boyunca maddi ve manevi desteklerini hiçbir zaman esirgemeyen, her koşulda yanımda olan ve bugünlere gelmemi sağlayan kıymetli aileme sonsuz teşekkür ederim. Onların varlığı ve inancı olmadan bu projenin tamamlanması mümkün olamazdı.</p>
+<p class="no-indent" style="text-align: right; margin-top: 40pt;">Mehrdad Shomali<br>Haziran 2026</p>
+<div class="page-break"></div>
+
+<!-- ==================== İÇİNDEKİLER ==================== -->
+<div class="toc-title">İÇİNDEKİLER</div>
+
+<div class="toc-item level1"><span>ÖNSÖZ</span><span class="toc-dots"></span><span>i</span></div>
+<div class="toc-item level1"><span>İÇİNDEKİLER</span><span class="toc-dots"></span><span>ii</span></div>
+<div class="toc-item level1"><span>ÇİZELGE LİSTESİ</span><span class="toc-dots"></span><span>iv</span></div>
+<div class="toc-item level1"><span>ŞEKİL LİSTESİ</span><span class="toc-dots"></span><span>v</span></div>
+<div class="toc-item level1"><span>KISALTMA LİSTESİ</span><span class="toc-dots"></span><span>vi</span></div>
+
+<div class="toc-item level1"><span>1. GİRİŞ</span><span class="toc-dots"></span><span>1</span></div>
+<div class="toc-item level2"><span>1.1. Projenin Arka Planı ve Motivasyonu</span><span class="toc-dots"></span><span>1</span></div>
+<div class="toc-item level2"><span>1.2. Literatür Taraması ve Mevcut Çözümler</span><span class="toc-dots"></span><span>3</span></div>
+<div class="toc-item level2"><span>1.3. Projenin Amacı ve Kapsamı</span><span class="toc-dots"></span><span>5</span></div>
+<div class="toc-item level2"><span>1.4. Projenin Özgün Değeri ve Katkısı</span><span class="toc-dots"></span><span>6</span></div>
+
+<div class="toc-item level1"><span>2. MATERYAL VE YÖNTEM</span><span class="toc-dots"></span><span>8</span></div>
+<div class="toc-item level2"><span>2.1. Sistem Mimarisi ve Teknoloji Yığını</span><span class="toc-dots"></span><span>8</span></div>
+<div class="toc-item level2"><span>2.2. Veri Modeli ve Durum Yönetimi (State Management)</span><span class="toc-dots"></span><span>13</span></div>
+<div class="toc-item level2"><span>2.3. Algoritmalar ve Veri Yapıları</span><span class="toc-dots"></span><span>17</span></div>
+<div class="toc-item level2"><span>2.4. Kullanıcı Arayüzü (UI) ve Erişilebilirlik (Accessibility)</span><span class="toc-dots"></span><span>21</span></div>
+
+<div class="toc-item level1"><span>3. BULGULAR VE İMPLEMENTASYON</span><span class="toc-dots"></span><span>23</span></div>
+<div class="toc-item level2"><span>3.1. Karşılama Ekranı (Splash Screen) ve İlk Kullanıcı Deneyimi</span><span class="toc-dots"></span><span>23</span></div>
+<div class="toc-item level2"><span>3.2. Uygulama Navigasyon Yapısı ve Modüler Tasarım</span><span class="toc-dots"></span><span>24</span></div>
+<div class="toc-item level2"><span>3.3. Bilişsel Rehabilitasyon Modülleri</span><span class="toc-dots"></span><span>25</span></div>
+<div class="toc-item level2"><span>3.4. Günlük Rutin ve İlaç Takip Sistemi</span><span class="toc-dots"></span><span>29</span></div>
+<div class="toc-item level2"><span>3.5. Coğrafi Çit (Geofencing) ve Güvenlik Modülü</span><span class="toc-dots"></span><span>31</span></div>
+<div class="toc-item level2"><span>3.6. Çoklu Dil Mimarisi (i18n)</span><span class="toc-dots"></span><span>35</span></div>
+<div class="toc-item level2"><span>3.7. Bulut Veritabanı (Supabase) ve Offline-First Mimari</span><span class="toc-dots"></span><span>36</span></div>
+<div class="toc-item level2"><span>3.8. Bakıcı Arayüzü ve Analitik (Caregiver Portal)</span><span class="toc-dots"></span><span>39</span></div>
+
+<div class="toc-item level1"><span>4. TARTIŞMA</span><span class="toc-dots"></span><span>41</span></div>
+<div class="toc-item level1"><span>5. SONUÇ VE GELECEK ÇALIŞMALAR</span><span class="toc-dots"></span><span>43</span></div>
+<div class="toc-item level1"><span>6. KAYNAKLAR</span><span class="toc-dots"></span><span>45</span></div>
+<div class="page-break"></div>
+
+<!-- ==================== 1. GİRİŞ ==================== -->
+<h1>1. GİRİŞ</h1>
+
+<h2>1.1. Projenin Arka Planı ve Motivasyonu</h2>
+<p>Modern çağın en büyük sağlık sorunlarından biri olan nörodejeneratif hastalıklar, demografik yaşlanma ile birlikte küresel bir kriz halini almıştır. Dünya Sağlık Örgütü'nün (WHO) yayınladığı güncel raporlara göre, dünya genelinde 55 milyondan fazla insan demans sendromu ile yaşamaktadır ve bu vakaların %60-70'ini Alzheimer hastalığı oluşturmaktadır. Alzheimer, beynin hafıza, düşünme ve dil gibi kognitif işlevlerini yavaş yavaş ve geri döndürülemez bir biçimde yok eden progresif (ilerleyici) bir beyin hastalığıdır.</p>
+
+<h2>1.2. Literatür Taraması ve Mevcut Çözümler</h2>
+<p>Geliştirilecek olan uygulamanın akademik temellerini sağlamlaştırmak amacıyla, bilişsel terapi ve mobil sağlık teknolojileri alanlarında literatür taraması yapılmıştır. Memento projesinde yer alan "Hafıza Egzersizleri" ve "Aile Albümü" modülleri, CST'nin temel prensiplerinden olan "anımsama terapisi" (reminiscence therapy) konsepti üzerine modellenmiştir.</p>
+
+<h2>1.3. Projenin Amacı ve Kapsamı</h2>
+<p>Bu bitirme projesinin temel amacı; Alzheimer ve demans hastalarının günlük yaşam aktivitelerini destekleyen, bakıcıların yükünü hafifleten, kullanımı kolay, yüksek erişilebilirlik standartlarına sahip, platform bağımsız (cross-platform) ve bütünleşik (all-in-one) bir mobil uygulama tasarlamak ve geliştirmektir.</p>
+
+<div class="figure-container">
+  <img src="file:///Users/mehrdadshomali/.gemini/antigravity-ide/brain/d730c641-630a-49ed-bd2a-7834da00e3b3/media__1781204225182.png" style="max-height: 400px; border: 1px solid #ccc; border-radius: 8px;">
+  <p class="figure-caption">Şekil 1.1: Uygulama örnek ekranı - Hastaya sunulan bilişsel terapi arayüzü örneği.</p>
+</div>
+
+<div class="figure-container">
+  <img src="file:///Users/mehrdadshomali/.gemini/antigravity-ide/brain/d730c641-630a-49ed-bd2a-7834da00e3b3/media__1781204225209.png" style="max-height: 400px; border: 1px solid #ccc; border-radius: 8px;">
+  <p class="figure-caption">Şekil 1.2: Uygulamanın içerik yönetim ve analiz arayüzü örneği.</p>
+</div>
+
+<h2>1.4. Projenin Özgün Değeri ve Katkısı</h2>
+<p>Projenin literatüre ve sektöre sağladığı en büyük özgün değer, modüler ancak birbiriyle konuşabilen yapıların tek bir mobil uygulama içerisinde toplanmış olmasıdır. Hastanın kognitif geçmişine (egzersiz başarı oranları) ve lokasyon geçmişine aynı veri bağlamı (Context) üzerinden erişilebilmektedir.</p>
+
+<div class="page-break"></div>
+
+<!-- ==================== 2. MATERYAL VE YÖNTEM ==================== -->
+<h1>2. MATERYAL VE YÖNTEM</h1>
+
+<p>Uygulamanın hayata geçirilmesinde güncel yazılım mühendisliği pratikleri, modern frameworkler ve sürdürülebilir mimari desenler kullanılmıştır.</p>
+
+<h2>2.1. Sistem Mimarisi ve Teknoloji Yığını</h2>
+<p>Memento uygulamasının mimarisi, MVC (Model-View-Controller) prensiplerinden esinlenerek modern bileşen tabanlı (component-based) bir yapıda inşa edilmiştir.</p>
+
+<table>
+  <caption>Çizelge 2.1: Projede Kullanılan Temel Teknolojiler ve İşlevleri</caption>
+  <thead>
+    <tr>
+      <th>Teknoloji / Kütüphane</th>
+      <th>Kullanım Amacı</th>
+      <th>Mimarideki Rolü</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><b>React Native & Expo</b></td>
+      <td>Cross-platform mobil geliştirme</td>
+      <td>Temel UI framework'ü ve native API köprüsü.</td>
+    </tr>
+    <tr>
+      <td><b>Supabase (PostgreSQL)</b></td>
+      <td>Bulut veritabanı ve dosya depolama</td>
+      <td>Backend as a Service (BaaS) mimarisi.</td>
+    </tr>
+    <tr>
+      <td><b>TypeScript</b></td>
+      <td>Statik tip güvenliği</td>
+      <td>Çalışma zamanı (runtime) hatalarını önleme.</td>
+    </tr>
+    <tr>
+      <td><b>Expo Location & Tasks</b></td>
+      <td>Arka plan konum takibi</td>
+      <td>Güvenlik ve coğrafi çit (Geofencing) yönetimi.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>2.2. Veri Modeli ve Durum Yönetimi (State Management)</h2>
+<p>Uygulamanın durum yönetimi, mantıksal sınırlar etrafında ana Context modülüne bölünmüştür. Bu modüler yapı, gereksiz yeniden çizimleri (re-renders) önleyerek performansı optimize eder.</p>
+
+<h2>2.4. Kullanıcı Arayüzü (UI) ve Erişilebilirlik (Accessibility)</h2>
+<p>Hedef kitlenin ileri yaş ve bilişsel gerileme yaşayan bireylerden oluşması, arayüz tasarımında olağanüstü bir sadelik ve erişilebilirlik gerektirmektedir. Tasarım kararları, Dünya Çapında Ağ Konsorsiyumu'nun (W3C) yayınladığı Web İçeriği Erişilebilirlik Yönergeleri (WCAG) temel alınarak oluşturulmuştur.</p>
+
+<div class="figure-container">
+  <div class="img-placeholder">
+    [BURAYA ANA EKRAN GÖRÜNTÜSÜ<br>(HomeScreen)<br>EKLENECEK]
+  </div>
+  <p class="figure-caption">Şekil 2.1: WCAG erişilebilirlik standartlarına uygun olarak tasarlanmış, geniş dokunma hedeflerine sahip Ana Ekran arayüzü.</p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ==================== 3. BULGULAR VE İMPLEMENTASYON ==================== -->
+<h1>3. BULGULAR VE İMPLEMENTASYON</h1>
+
+<h2>3.1. Karşılama Ekranı (Splash Screen) ve İlk Kullanıcı Deneyimi</h2>
+<p>Uygulamanın ilk açılış deneyimi (Onboarding), Alzheimer hastalarında kafa karışıklığını önlemek adına büyük önem taşımaktadır. Memento uygulamasında yerleşik (native) bir animasyonlu sıçrama ekranı (`AnimatedSplashScreen.tsx`) kullanılmıştır. Bu ekran, uygulamanın yüklenme süresini gizlerken hastaya güven veren pastel tonlarda bir animasyon sunar. Ardından gelen `OnboardingScreen`, uygulamanın temel işlevlerini (anımsama terapisi, günlük rutin ve güvenlik) büyük, okunaklı fontlar ve anlaşılır vektörel ikonlar (Lucide/Expo Icons) ile anlatır. Bu aşamada sistem arka planda gerekli izinleri (konum ve bildirim izinleri) kullanıcıyı strese sokmadan kademeli olarak talep eder.</p>
+
+<h2>3.2. Uygulama Navigasyon Yapısı ve Modüler Tasarım</h2>
+<p>Proje, ekranlar arası navigasyonu yönetmek üzere `react-navigation/native-stack` kütüphanesini kullanmaktadır. Klasik tabanlı menülerin (Bottom Tab Bar) Alzheimer hastalarında kafa karışıklığı (disoryantasyon) yarattığı gözlemlendiğinden, uygulamanın mimarisi tek ve güçlü bir "Ana Ekran" üzerine kurulmuştur.</p>
+
+<h2>3.3. Bilişsel Rehabilitasyon Modülleri</h2>
+<p>Aile Albümü (`FamilyAlbumScreen`), hastanın yakınlarının fotoğraf ve videolarının (medya) özel notlarla birlikte sunulduğu bir "dijital çerçeve" işlevi görmektedir. Bu albüm aynı zamanda uygulamanın oyun motorunu besleyen veri kaynağıdır.</p>
+
+<div class="arch-row">
+  <div class="figure-container" style="flex:1;">
+    <div class="img-placeholder" style="height: 350px; width: 100%;">
+      [AİLE ALBÜMÜ EKRANI<br>(FamilyAlbumScreen)]
+    </div>
+  </div>
+  <div class="figure-container" style="flex:1;">
+    <div class="img-placeholder" style="height: 350px; width: 100%;">
+      [HAFIZA OYUNU EKRANI<br>(GameScreen)]
+    </div>
+  </div>
+</div>
+<p class="figure-caption">Şekil 3.2: Aile Albümü (Solda) ve üç seçenekli Fisher-Yates karıştırmalı Hafıza Oyunu (Sağda).</p>
+
+<h2>3.4. Günlük Rutin ve İlaç Takip Sistemi</h2>
+<p>Uygulamanın `RoutineContext` modülü, demans hastalarının günlük yaşam aktivitelerini (ADL - Activities of Daily Living) sürdürmelerine destek olur. İlaç saati, yemek, egzersiz veya doktor randevusu gibi rutinler, 7 farklı kategori altında yönetilir.</p>
+
+<div class="figure-container">
+  <div class="img-placeholder" style="height: 400px;">
+    [BURAYA RUTİN/İLAÇ EKRANI<br>(RoutineScreen)<br>EKLENECEK]
+  </div>
+  <p class="figure-caption">Şekil 3.4: Günlük rutin ilerleme durumu ve yeni rutin ekleme/zamanlama arayüzleri.</p>
+</div>
+
+<h2>3.5. Coğrafi Çit (Geofencing) ve Güvenlik Modülü</h2>
+<p>Hasta güvenliğinin sağlanması amacıyla geliştirilen Safety modülü, konum tabanlı servislerin (LBS) yoğun olarak kullanıldığı bölümdür. Bakıcı, `SafetyScreen` üzerinden bir harita arayüzü kullanarak ev koordinatlarını belirler.</p>
+
+<h2>3.6. Çoklu Dil Mimarisi (i18n)</h2>
+<p>Proje baştan itibaren uluslararasılaştırma (internationalization - i18n) prensiplerine uygun olarak kodlanmıştır. `src/i18n` dizini altında merkezi bir dil yönetim sözlüğü (dictionary) bulunmaktadır.</p>
+
+<div class="figure-container">
+  <div class="img-placeholder" style="height: 400px;">
+    [BURAYA AYARLAR EKRANI<br>(SettingsScreen)<br>EKLENECEK]
+  </div>
+  <p class="figure-caption">Şekil 3.7: Çoklu dil seçimi ve sistem ayarları konfigürasyon arayüzü.</p>
+</div>
+
+<h2>3.7. Bulut Veritabanı (Supabase) ve Çevrimdışı Öncelikli (Offline-First) Mimari</h2>
+<p>Uygulamanın ilk sürümlerinde yalnızca yerel cihaz hafızası kullanılmış olsa da, nihai üründe güvenilir bir PostgreSQL tabanlı Backend as a Service (BaaS) çözümü olan <b>Supabase</b> entegre edilmiştir. Uygulama, hastanın veri kaybı yaşamaması adına "Offline-First" (Çevrimdışı Öncelikli) mimari ile tasarlanmıştır. Bu mimaride, uygulama her okuma ve yazma işlemini öncelikle Supabase sunucularına iletirken, eş zamanlı olarak cihazın yerel önbelleğine (AsyncStorage) kaydeder. İnternet bağlantısının kopması durumunda uygulama çökmek yerine yerel önbelleği (fallback) kullanarak kesintisiz çalışmaya devam eder.</p>
+
+<p>Kullanıcıların eklediği fotoğraflar ve ses kayıtları gibi medya dosyaları (BLOB objeleri), doğrudan Supabase Storage "memories" adlı bucket (kova) yapısına yüklenmektedir. Böylece veritabanında sadece bu dosyaların genel ağ adresleri (URL) tutularak veritabanı şişmesinin önüne geçilmiştir.</p>
+
+<table>
+  <caption>Çizelge 3.1: Memento Uygulaması Supabase Veritabanı Şeması (Database Schema)</caption>
+  <thead>
+    <tr>
+      <th>Tablo Adı</th>
+      <th>İçerik ve Görevi</th>
+      <th>Yabancı Anahtar (Foreign Key)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><b>profiles</b></td>
+      <td>Kullanıcı profilleri, isim ve avatar verileri.</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td><b>memory_cards</b></td>
+      <td>Hafıza oyunu için görsel, ses dosyaları ve ipuçları.</td>
+      <td>profile_id -> profiles(id)</td>
+    </tr>
+    <tr>
+      <td><b>routines</b></td>
+      <td>İlaç, egzersiz vb. tekrarlı günlük görevler.</td>
+      <td>profile_id -> profiles(id)</td>
+    </tr>
+    <tr>
+      <td><b>routine_completions</b></td>
+      <td>Rutinlerin günlük başarı kayıtları.</td>
+      <td>routine_id -> routines(id)</td>
+    </tr>
+    <tr>
+      <td><b>safety_profiles</b></td>
+      <td>Ev koordinatları (enlem/boylam) ve acil durum kişisi.</td>
+      <td>profile_id -> profiles(id)</td>
+    </tr>
+    <tr>
+      <td><b>game_sessions</b></td>
+      <td>Oyun oynanma süresi, başarı oranları ve istatistikler.</td>
+      <td>profile_id -> profiles(id)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>3.8. Bakıcı Arayüzü ve Analitik (Caregiver Portal & Analytics)</h2>
+<p>Alzheimer hastalığının yönetiminde hastanın kendisi kadar bakıcının rolü de büyüktür. Uygulama içerisinde şifreli veya özel erişimle girilebilen bir "Caregiver Screen" (Bakıcı Arayüzü) modülü geliştirilmiştir. Bu arayüz üzerinden bakıcı; hastanın günlük rutinlere uyma oranını (Completion Rate), hafıza egzersizlerindeki başarı yüzdesini, ve güvenlik sensörlerinden gelen konum verilerini grafiksel olarak analiz edebilir (`AnalyticsScreen.tsx`). Toplanan bu veriler, doktor randevularında nöroloji uzmanlarına hastanın gerileme hızı hakkında kıymetli ve objektif sayısal veriler (metrikler) sunma potansiyeline sahiptir.</p>
+
+<div class="figure-container">
+  <div class="img-placeholder" style="height: 400px;">
+    [BURAYA ANALİTİK EKRANI<br>(AnalyticsScreen)<br>EKLENECEK]
+  </div>
+  <p class="figure-caption">Şekil 3.8: Bakıcılar için geliştirilmiş analitik veri izleme arayüzü.</p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ==================== 4. TARTIŞMA ==================== -->
+<h1>4. TARTIŞMA</h1>
+<p>Memento projesinin genel değerlendirmesi yapıldığında, belirlenen tüm sistem hedeflerine ulaşıldığı görülmektedir. Cross-platform mobil geliştirme felsefesinin sunduğu avantajlar kullanılarak, yüksek performanslı, tutarlı ve tıbbi rehabilitasyon normlarına uygun bir uygulama elde edilmiştir. Veritabanının PostgreSQL destekli bir bulut servisine taşınması, uygulamanın birden fazla cihazdan (örneğin hastanın tableti ve bakıcının telefonu) eşzamanlı olarak kullanılabilmesine olanak tanımıştır.</p>
+
+<h1>5. SONUÇ VE GELECEK ÇALIŞMALAR</h1>
+<p>Bu bitirme projesi ile, modern yazılım mühendisliği araçları ve donanım entegrasyon servisleri kullanılarak Alzheimer hastaları için bütünleşik bir mobil uygulama başarıyla geliştirilmiştir. Gelecek çalışmalarda, bir Acil Durum (SOS) butonu eklenerek hastanın tek tuşla önceden belirlenmiş kişilere SMS veya arama ile ulaşması hedeflenmektedir.</p>
+
+</body>
+</html>

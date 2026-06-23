@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Memento - Bitirme Projesi Raporu</title>
+<style>
+  @page {
+    size: A4;
+    margin: 2.5cm 2.5cm 2.5cm 3cm;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 12pt;
+    line-height: 1.6;
+    color: #000;
+    background: #fff;
+  }
+  .page-break { page-break-after: always; }
+  h1 { font-size: 16pt; font-weight: bold; margin-top: 24pt; margin-bottom: 12pt; }
+  h2 { font-size: 14pt; font-weight: bold; margin-top: 18pt; margin-bottom: 10pt; }
+  h3 { font-size: 13pt; font-weight: bold; margin-top: 14pt; margin-bottom: 8pt; }
+  h4 { font-size: 12pt; font-weight: bold; margin-top: 12pt; margin-bottom: 6pt; }
+  p { text-align: justify; margin-bottom: 10pt; text-indent: 1cm; }
+  p.no-indent { text-indent: 0; }
+  .cover-page {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 90vh; text-align: center;
+  }
+  .cover-page h1 { font-size: 18pt; margin-bottom: 6pt; }
+  .cover-page h2 { font-size: 14pt; font-weight: normal; margin-bottom: 30pt; }
+  .cover-page .uni { font-size: 14pt; font-weight: bold; margin-bottom: 4pt; }
+  .cover-page .dept { font-size: 13pt; margin-bottom: 40pt; }
+  .cover-page .student { font-size: 12pt; margin-top: 40pt; }
+  .cover-page .date { font-size: 12pt; margin-top: 30pt; }
+  .toc-title { font-size: 14pt; font-weight: bold; text-align: center; margin-bottom: 20pt; }
+  .toc-item { display: flex; justify-content: space-between; margin-bottom: 4pt; font-size: 12pt; }
+  .toc-item.level1 { font-weight: bold; margin-top: 8pt; }
+  .toc-item.level2 { padding-left: 1cm; }
+  .toc-item.level3 { padding-left: 2cm; }
+  .toc-dots { flex: 1; border-bottom: 1px dotted #666; margin: 0 4pt; min-width: 2cm; }
+  table { width: 100%; border-collapse: collapse; margin: 12pt 0; font-size: 11pt; }
+  table th, table td { border: 1px solid #333; padding: 6pt 8pt; text-align: left; }
+  table th { background-color: #e8e8e8; font-weight: bold; }
+  table caption { font-weight: bold; margin-bottom: 6pt; text-align: left; font-size: 11pt; }
+  .figure-caption { text-align: center; font-size: 10pt; margin-top: 6pt; margin-bottom: 12pt; font-style: italic; }
+  .code-block {
+    background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px;
+    padding: 10pt; font-family: 'Courier New', monospace; font-size: 9pt;
+    overflow-x: auto; margin: 10pt 0; white-space: pre-wrap; line-height: 1.4;
+  }
+  .list-section { margin-bottom: 12pt; }
+  .list-section .list-title { font-weight: bold; margin-bottom: 8pt; text-align: center; font-size: 14pt; }
+  .list-item { display: flex; justify-content: space-between; margin-bottom: 3pt; }
+  .list-dots { flex: 1; border-bottom: 1px dotted #666; margin: 0 4pt; }
+  .section-label { font-size: 10pt; color: #555; text-align: right; margin-top: -6pt; margin-bottom: 8pt; }
+  ul { margin-left: 1.5cm; margin-bottom: 10pt; }
+  ul li { margin-bottom: 4pt; }
+  .onsoz { font-style: normal; }
+  .architecture-box {
+    border: 2px solid #333; padding: 16pt; margin: 12pt 0; text-align: center;
+    background: #fafafa; border-radius: 4px;
+  }
+  .arch-row { display: flex; justify-content: center; gap: 12pt; margin: 8pt 0; flex-wrap: wrap; }
+  .arch-box {
+    border: 1px solid #666; padding: 8pt 14pt; border-radius: 6px; font-size: 10pt;
+    font-weight: bold; min-width: 100pt; text-align: center;
+  }
+  .arch-arrow { font-size: 18pt; color: #666; display: flex; align-items: center; }
+  .flow-diagram { display: flex; flex-direction: column; align-items: center; gap: 6pt; }
+  .flow-box { border: 2px solid #B07D4F; padding: 8pt 20pt; border-radius: 8px; font-weight: bold; background: #FAF8F5; }
+  .flow-arrow { font-size: 16pt; color: #B07D4F; }
+</style>
+</head>
+<body>
+
+<!-- ==================== KAPAK SAYFASI ==================== -->
+<div class="cover-page">
+  <p class="uni">TEKİRDAĞ NAMIK KEMAL ÜNİVERSİTESİ</p>
+  <p class="dept">ÇORLU MÜHENDİSLİK FAKÜLTESİ<br>BİLGİSAYAR MÜHENDİSLİĞİ BÖLÜMÜ</p>
+  <br><br>
+  <h1>MEMENTO</h1>
+  <h2>Alzheimer Hastaları İçin Terapötik Hafıza Egzersiz<br>Mobil Uygulaması</h2>
+  <br>
+  <p style="font-size:13pt; font-weight:bold;">BİTİRME PROJESİ</p>
+  <br><br><br>
+  <p class="student"><b>Hazırlayan:</b> Mehrdad Shomali</p>
+  <br>
+  <p class="date">Haziran 2026<br>Tekirdağ</p>
+</div>
+<div class="page-break"></div>
+
+<!-- ==================== İÇİNDEKİLER ==================== -->
+<div class="toc-title">İÇİNDEKİLER</div>
+
+<div class="toc-item level1"><span>ÇİZELGE LİSTESİ</span><span class="toc-dots"></span><span>iv</span></div>
+<div class="toc-item level1"><span>ŞEKİL LİSTESİ</span><span class="toc-dots"></span><span>v</span></div>
+<div class="toc-item level1"><span>KISALTMA LİSTESİ</span><span class="toc-dots"></span><span>vi</span></div>
+<div class="toc-item level1"><span>ÖNSÖZ</span><span class="toc-dots"></span><span>vii</span></div>
+
+<div class="toc-item level1"><span>1. GİRİŞ</span><span class="toc-dots"></span><span>1</span></div>
+<div class="toc-item level2"><span>1.1. Projenin Genel Tanımı</span><span class="toc-dots"></span><span>1</span></div>
+<div class="toc-item level2"><span>1.2. Projenin Nedeni ve Amaçları</span><span class="toc-dots"></span><span>2</span></div>
+<div class="toc-item level2"><span>1.3. Projenin Genel Tanıtımı ve Ekran Görüntüleri</span><span class="toc-dots"></span><span>3</span></div>
+
+<div class="toc-item level1"><span>2. MATERYAL VE YÖNTEM</span><span class="toc-dots"></span><span>6</span></div>
+<div class="toc-item level2"><span>2.1. Proje Gereksinimleri</span><span class="toc-dots"></span><span>6</span></div>
+<div class="toc-item level3"><span>2.1.1. React Native ve Expo Framework</span><span class="toc-dots"></span><span>6</span></div>
+<div class="toc-item level3"><span>2.1.2. TypeScript</span><span class="toc-dots"></span><span>7</span></div>
+<div class="toc-item level3"><span>2.1.3. React Navigation</span><span class="toc-dots"></span><span>8</span></div>
+<div class="toc-item level3"><span>2.1.4. AsyncStorage — Yerel Veri Depolama</span><span class="toc-dots"></span><span>8</span></div>
+<div class="toc-item level3"><span>2.1.5. Expo Location ve Haversine Formülü</span><span class="toc-dots"></span><span>9</span></div>
+<div class="toc-item level3"><span>2.1.6. Expo Notifications</span><span class="toc-dots"></span><span>10</span></div>
+<div class="toc-item level3"><span>2.1.7. Expo AV — Ses Kayıt ve Oynatma</span><span class="toc-dots"></span><span>10</span></div>
+<div class="toc-item level3"><span>2.1.8. React Context API — Durum Yönetimi</span><span class="toc-dots"></span><span>11</span></div>
+<div class="toc-item level2"><span>2.2. Yazılım Mimarisi ve Tasarım Desenleri</span><span class="toc-dots"></span><span>11</span></div>
+<div class="toc-item level2"><span>2.3. Kullanıcı Arayüzü Tasarım Prensipleri</span><span class="toc-dots"></span><span>12</span></div>
+
+<div class="toc-item level1"><span>3. BULGULAR — PROJENİN ÇALIŞMASI VE KABİLİYETLERİ</span><span class="toc-dots"></span><span>13</span></div>
+<div class="toc-item level2"><span>3.1. Uygulama Akışı ve Navigasyon Yapısı</span><span class="toc-dots"></span><span>13</span></div>
+<div class="toc-item level2"><span>3.2. Profil Yönetim Sistemi</span><span class="toc-dots"></span><span>14</span></div>
+<div class="toc-item level2"><span>3.3. Hafıza Egzersiz Oyun Motoru</span><span class="toc-dots"></span><span>15</span></div>
+<div class="toc-item level2"><span>3.4. Aile Albümü ve Sesli Mesajlar Modülü</span><span class="toc-dots"></span><span>16</span></div>
+<div class="toc-item level2"><span>3.5. Günlük Rutin Yönetim Sistemi</span><span class="toc-dots"></span><span>17</span></div>
+<div class="toc-item level2"><span>3.6. Güvenlik ve Konum Takip Modülü</span><span class="toc-dots"></span><span>18</span></div>
+<div class="toc-item level2"><span>3.7. Arka Plan Konum Takibi ve Bildirim Sistemi</span><span class="toc-dots"></span><span>19</span></div>
+<div class="toc-item level2"><span>3.8. Bakıcı Modu ve Analiz Raporları</span><span class="toc-dots"></span><span>20</span></div>
+<div class="toc-item level2"><span>3.9. Çoklu Dil Desteği (i18n)</span><span class="toc-dots"></span><span>21</span></div>
+<div class="toc-item level2"><span>3.10. Kod Yapısı ve Açıklamaları</span><span class="toc-dots"></span><span>22</span></div>
+
+<div class="toc-item level1"><span>4. TARTIŞMA VE SONUÇ</span><span class="toc-dots"></span><span>24</span></div>
+
+<div class="toc-item level1"><span>5. KAYNAKLAR</span><span class="toc-dots"></span><span>26</span></div>
+<div class="page-break"></div>
+
+<!-- ==================== ÇİZELGE LİSTESİ ==================== -->
+<div class="list-section">
+  <div class="list-title">ÇİZELGE LİSTESİ</div>
+  <br>
+  <div style="text-align:right; font-weight:bold; margin-bottom:8pt;"><u>Sayfa</u></div>
+  <div class="list-item"><span>Çizelge 1: Projede Kullanılan Teknolojiler ve Sürümleri</span><span class="list-dots"></span><span>6</span></div>
+  <div class="list-item"><span>Çizelge 2: Uygulama Ekranları ve İşlevleri</span><span class="list-dots"></span><span>13</span></div>
+  <div class="list-item"><span>Çizelge 3: Rutin Kategorileri Tablosu</span><span class="list-dots"></span><span>17</span></div>
+  <div class="list-item"><span>Çizelge 4: Güvenlik Profili Veri Yapısı</span><span class="list-dots"></span><span>18</span></div>
+  <div class="list-item"><span>Çizelge 5: Dosya ve Klasör Yapısı İstatistikleri</span><span class="list-dots"></span><span>22</span></div>
+  <div class="list-item"><span>Çizelge 6: Context API Modülleri ve Sorumlulukları</span><span class="list-dots"></span><span>23</span></div>
+</div>
+<div class="page-break"></div>
+
+<!-- ==================== ŞEKİL LİSTESİ ==================== -->
+<div class="list-section">
+  <div class="list-title">ŞEKİL LİSTESİ</div>
+  <br>
+  <div style="text-align:right; font-weight:bold; margin-bottom:8pt;"><u>Sayfa</u></div>
+  <div class="list-item"><span>Şekil 1: Sistemin Genel Mimarisi</span><span class="list-dots"></span><span>1</span></div>
+  <div class="list-item"><span>Şekil 2: Uygulama Akış Diyagramı</span><span class="list-dots"></span><span>3</span></div>
+  <div class="list-item"><span>Şekil 3: React Native / Expo Çalışma Prensibi</span><span class="list-dots"></span><span>7</span></div>
+  <div class="list-item"><span>Şekil 4: Context API Veri Akış Diyagramı</span><span class="list-dots"></span><span>11</span></div>
+  <div class="list-item"><span>Şekil 5: Haversine Mesafe Hesaplama Formülü</span><span class="list-dots"></span><span>9</span></div>
+  <div class="list-item"><span>Şekil 6: Navigasyon Yapısı (Stack Navigator)</span><span class="list-dots"></span><span>13</span></div>
+  <div class="list-item"><span>Şekil 7: Hafıza Oyunu Akış Şeması</span><span class="list-dots"></span><span>15</span></div>
+  <div class="list-item"><span>Şekil 8: Arka Plan Konum Takibi Akış Diyagramı</span><span class="list-dots"></span><span>19</span></div>
+</div>
+<div class="page-break"></div>
+
+<!-- ==================== KISALTMALAR ==================== -->
+<div class="list-section">
+  <div class="list-title">KISALTMALAR</div>
+  <br><br>
+  <table style="border: none; width: 60%;">
+    <tr style="border:none;"><td style="border:none; width:80pt; font-weight:bold;">API</td><td style="border:none;">: Application Programming Interface (Uygulama Programlama Arayüzü)</td></tr>
+    <tr style="border:none;"><td style="border:none; font-weight:bold;">GPS</td><td style="border:none;">: Global Positioning System (Küresel Konumlandırma Sistemi)</td></tr>
+    <tr style="border:none;"><td style="border:none; font-weight:bold;">i18n</td><td style="border:none;">: Internationalization (Uluslararasılaştırma)</td></tr>
+    <tr style="border:none;"><td style="border:none; font-weight:bold;">iOS</td><td style="border:none;">: iPhone Operating System</td></tr>
+    <tr style="border:none;"><td style="border:none; font-weight:bold;">SDK</td><td style="border:none;">: Software Development Kit</td></tr>
+    <tr style="border:none;"><td style="border:none; font-weight:bold;">SMS</td><td style="border:none;">: Short Message Service</td></tr>
+    <tr style="border:none;"><td style="border:none; font-weight:bold;">UI</td><td style="border:none;">: User Interface (Kullanıcı Arayüzü)</td></tr>
+    <tr style="border:none;"><td style="border:none; font-weight:bold;">UX</td><td style="border:none;">: User Experience (Kullanıcı Deneyimi)</td></tr>
+    <tr style="border:none;"><td style="border:none; font-weight:bold;">WCAG</td><td style="border:none;">: Web Content Accessibility Guidelines</td></tr>
+  </table>
+</div>
+<div class="page-break"></div>
+
+<!-- ==================== ÖNSÖZ ==================== -->
+<div class="list-title">ÖNSÖZ</div>
+<br>
+<p>Proje çalışmamızın planlanmasında, yürütülmesinde ilgi ve desteğini esirgemeyen danışman hocamıza, Bilgisayar Mühendisliği Bölüm Öğretim Elemanlarına ve Tekirdağ Namık Kemal Üniversitesi'ne en içten teşekkürlerimizi sunarız.</p>
+
+<p>Bu proje, Alzheimer hastalığıyla mücadele eden bireyler ve ailelerinin günlük yaşamlarını kolaylaştırmak amacıyla geliştirilmiştir. Dünya genelinde 50 milyondan fazla insanı etkileyen bu hastalığın yarattığı zorlukların teknoloji ile hafifletilebileceğine inanıyoruz.</p>
+
+<p>Eğitimimiz süresince bize her konuda tam destek veren ailemize ve bize değerli bilgiler kazandıran tüm hocalarımıza saygı ve sevgilerimizi sunarız.</p>
+
+<br><br>
+<p class="no-indent" style="text-align: right;">Haziran 2026<br><br>Mehrdad Shomali</p>
+<div class="page-break"></div>
+
+<!-- ==================== 1. GİRİŞ ==================== -->
+<h1>1. GİRİŞ</h1>
+
+<p>Alzheimer hastalığı, dünya genelinde en yaygın nörodejeneratif hastalıklardan biri olup Dünya Sağlık Örgütü (WHO) verilerine göre 2024 yılı itibarıyla dünyada yaklaşık 55 milyon kişiyi etkilemektedir. Hastalık, ilerleyici hafıza kaybı, bilişsel bozulma, zaman ve mekân algısının yitirilmesi ile karakterize edilmektedir. Hastaların günlük aktivitelerini sürdürmekte, tanıdık yüzleri hatırlamakta ve güvenli bir şekilde yaşamlarını devam ettirmekte ciddi zorluklar yaşaması, bu alandaki teknolojik çözümlere olan ihtiyacı artırmaktadır.</p>
+
+<p>Mobil teknolojilerin hızlı gelişimi ve akıllı telefonların yaygınlaşması, sağlık alanında dijital çözümlerin (mHealth) önemini artırmıştır. Özellikle Alzheimer hastaları için geliştirilen bilişsel egzersiz uygulamaları, hafıza rehabilitasyonunda tamamlayıcı bir araç olarak klinik çalışmalarda olumlu sonuçlar göstermiştir.</p>
+
+<p>Bu proje kapsamında geliştirilen <b>Memento</b> uygulaması, React Native ve Expo teknolojileri kullanılarak hem iOS hem de Android platformlarında çalışabilen, Alzheimer hastaları ve bakıcıları için tasarlanmış kapsamlı bir terapötik mobil uygulama olarak hayata geçirilmiştir. Uygulama; hafıza egzersizleri, günlük rutin takibi, güvenli konum izleme, aile albümü ve sesli mesajlar gibi modüller içermektedir.</p>
+
+<h2>1.1. Projenin Genel Tanımı</h2>
+
+<p>Memento, Alzheimer ve demans hastalarının bilişsel sağlığını desteklemek amacıyla geliştirilmiş, çok modüllü bir terapötik mobil uygulamadır. Uygulama, hastanın aile üyeleri ve bakıcıları tarafından kişiselleştirilebilir yapıdadır ve Türkçe/İngilizce çoklu dil desteği sunmaktadır.</p>
+
+<div class="architecture-box">
+  <p style="font-weight: bold; margin-bottom: 12pt;">Şekil 1. Sistemin Genel Mimarisi</p>
+  <div class="arch-row">
+    <div class="arch-box" style="background:#FAF8F5; border-color:#B07D4F;">📱 Kullanıcı Arayüzü<br><small>React Native + Expo</small></div>
+  </div>
+  <div style="font-size:16pt; color:#666;">⬇️</div>
+  <div class="arch-row">
+    <div class="arch-box" style="background:#EAF1E6;">🧠 İş Mantığı<br><small>Context API + Hooks</small></div>
+    <div class="arch-box" style="background:#E8EFF5;">📊 State Yönetimi<br><small>useReducer + useState</small></div>
+  </div>
+  <div style="font-size:16pt; color:#666;">⬇️</div>
+  <div class="arch-row">
+    <div class="arch-box" style="background:#FDF4EB;">💾 Yerel Depolama<br><small>AsyncStorage</small></div>
+    <div class="arch-box" style="background:#FAECEC;">📍 Konum Servisi<br><small>Expo Location</small></div>
+    <div class="arch-box" style="background:#E8F2E8;">🔔 Bildirimler<br><small>Expo Notifications</small></div>
+  </div>
+</div>
+
+<p>Sistemin genel mimarisi üç katmanlı bir yapı üzerine inşa edilmiştir: kullanıcı arayüzü katmanı (React Native bileşenleri), iş mantığı katmanı (Context API ve Hooks ile durum yönetimi) ve veri/servis katmanı (AsyncStorage, konum takibi ve bildirimler).</p>
+
+<h2>1.2. Projenin Nedeni ve Amaçları</h2>
+
+<p>Projenin temel amacı, Alzheimer hastalarının günlük yaşamlarını destekleyecek, kullanımı kolay, erişilebilir ve terapötik değere sahip bir mobil uygulama geliştirmektir. Bu amaç doğrultusunda belirlenen alt hedefler şunlardır:</p>
+
+<ul>
+  <li><b>Hafıza Rehabilitasyonu:</b> Görsel ve işitsel hafıza egzersizleri ile hastanın tanıdık yüzleri ve sesleri hatırlamasına destek sağlamak.</li>
+  <li><b>Günlük Rutin Takibi:</b> İlaç, yemek ve egzersiz gibi kritik rutinlerin zamanında hatırlatılmasını sağlamak.</li>
+  <li><b>Güvenlik:</b> GPS tabanlı konum takibi ile hastanın evinden uzaklaşması durumunda otomatik bildirim ve yol tarifi sunmak.</li>
+  <li><b>Duygusal Bağ:</b> Aile albümü ve sesli mesajlar ile hastanın sevdikleriyle bağını güçlendirmek.</li>
+  <li><b>Bakıcı Desteği:</b> Bakıcılara içerik yönetimi ve analiz raporları sunarak hastanın ilerlemesini takip etmelerini sağlamak.</li>
+  <li><b>Erişilebilirlik:</b> Büyük dokunma hedefleri, yüksek kontrast ve sakinleştirici renk paleti ile Alzheimer hastalarına uygun bir arayüz tasarlamak.</li>
+</ul>
+
+<h2>1.3. Projenin Genel Tanıtımı ve Ekran Görüntüleri</h2>
+
+<p>Memento uygulaması, aşağıdaki temel modüllerden oluşmaktadır. Kullanıcı ilk açılışta bir onboarding (karşılama) ekranından geçerek profil oluşturur ve ardından ana ekrana yönlendirilir.</p>
+
+<div class="architecture-box">
+  <p style="font-weight: bold; margin-bottom: 12pt;">Şekil 2. Uygulama Akış Diyagramı</p>
+  <div class="flow-diagram">
+    <div class="flow-box">🚀 Uygulama Başlatma</div>
+    <div class="flow-arrow">⬇️</div>
+    <div class="flow-box">📋 Onboarding (İlk Açılış)</div>
+    <div class="flow-arrow">⬇️</div>
+    <div class="flow-box">👤 Profil Seçimi / Oluşturma</div>
+    <div class="flow-arrow">⬇️</div>
+    <div class="flow-box">🏠 Ana Ekran (Dashboard)</div>
+    <div class="flow-arrow">⬇️</div>
+    <div class="arch-row">
+      <div class="flow-box" style="font-size:10pt;">🖼️ Aile<br>Albümü</div>
+      <div class="flow-box" style="font-size:10pt;">🎵 Sesli<br>Mesajlar</div>
+      <div class="flow-box" style="font-size:10pt;">📅 Günlük<br>Rutin</div>
+      <div class="flow-box" style="font-size:10pt;">🛡️ Güvenlik<br>Takip</div>
+      <div class="flow-box" style="font-size:10pt;">👥 Bakıcı<br>Modu</div>
+    </div>
+  </div>
+</div>
+
+<p><b>Ana Ekran (HomeScreen):</b> Zamana göre kişiselleştirilmiş selamlama (Günaydın, İyi akşamlar vb.), günlük rutin ilerleme halkası, hafıza egzersizi kartları ve güvenlik uyarı bannerı içerir. Kullanıcı bu ekrandan tüm modüllere kolayca erişebilir.</p>
+
+<p><b>Aile Albümü:</b> Hastanın sevdiklerinin fotoğraflarını ve videolarını carousel (kaydırmalı galeri) formatında görüntüleyebildiği terapötik bir ekrandır. Her fotoğrafın altında duygusal notlar ve hatırlatıcılar bulunur.</p>
+
+<p><b>Sesli Mesajlar:</b> Aile üyelerinin hastaya bıraktığı sesli mesajları dinleyebileceği bir modüldür. Hasta, mesajları tek tuşla dinleyebilir ve yanıt bırakabilir.</p>
+
+<p><b>Hafıza Oyunları:</b> Fisher-Yates karıştırma algoritması ile oluşturulan görsel (yüz tanıma) ve işitsel (ses eşleştirme) egzersizlerdir. İpucu sistemi ve pozitif geri bildirimler ile stressiz bir deneyim sağlar.</p>
+
+<p><b>Güvenlik Modülü:</b> Haritadan ev konumu belirleme, GPS tabanlı mesafe hesaplama (Haversine formülü), arka plan konum takibi ve otomatik bildirim gönderme özelliklerini içerir.</p>
+
+<div class="page-break"></div>
+
+<!-- ==================== 2. MATERYAL VE YÖNTEM ==================== -->
+<h1>2. MATERYAL VE YÖNTEM</h1>
+
+<p>Bu bölümde projenin gerçekleştirilmesi için kullanılan teknolojiler, kütüphaneler, algoritmalar ve tasarım prensipleri detaylı olarak açıklanmaktadır. Memento uygulaması modern mobil uygulama geliştirme pratiklerine uygun olarak, cross-platform (çapraz platform) mimarisi üzerine inşa edilmiştir.</p>
+
+<h2>2.1. Proje Gereksinimleri</h2>
+
+<table>
+  <caption>Çizelge 1: Projede Kullanılan Teknolojiler ve Sürümleri</caption>
+  <tr><th>Teknoloji</th><th>Sürüm</th><th>Kullanım Amacı</th></tr>
+  <tr><td>React Native</td><td>0.81.5</td><td>Cross-platform mobil uygulama framework</td></tr>
+  <tr><td>Expo SDK</td><td>54.0.31</td><td>Geliştirme ve dağıtım platformu</td></tr>
+  <tr><td>TypeScript</td><td>5.9.2</td><td>Statik tip güvenliği</td></tr>
+  <tr><td>React</td><td>19.1.0</td><td>Bileşen tabanlı UI kütüphanesi</td></tr>
+  <tr><td>React Navigation</td><td>7.x</td><td>Ekran navigasyonu ve geçiş animasyonları</td></tr>
+  <tr><td>AsyncStorage</td><td>2.2.0</td><td>Yerel veri depolama (anahtar-değer)</td></tr>
+  <tr><td>Expo Location</td><td>19.0.8</td><td>GPS konum takibi</td></tr>
+  <tr><td>Expo Notifications</td><td>0.32.16</td><td>Yerel ve zamanlanmış bildirimler</td></tr>
+  <tr><td>Expo AV</td><td>16.0.8</td><td>Ses kaydetme ve oynatma</td></tr>
+  <tr><td>Expo Image Picker</td><td>17.0.10</td><td>Galeri erişimi ve fotoğraf/video seçimi</td></tr>
+  <tr><td>React Native Maps</td><td>1.20.1</td><td>Harita görüntüleme ve konum seçimi</td></tr>
+  <tr><td>Expo Task Manager</td><td>14.0.9</td><td>Arka plan görev yönetimi</td></tr>
+</table>
+
+<h3>2.1.1. React Native ve Expo Framework</h3>
+
+<p>React Native, Meta (Facebook) tarafından geliştirilen açık kaynaklı bir mobil uygulama geliştirme framework'üdür. JavaScript ve React kütüphanesini kullanarak hem iOS hem de Android platformlarında yerel (native) bileşenlerle çalışan uygulamalar geliştirmeyi mümkün kılar. Geleneksel hibrit uygulama yaklaşımlarından farklı olarak, React Native uygulamaları bir WebView içinde çalışmaz; bunun yerine platformun yerel UI bileşenlerini doğrudan kullanır (Meta, 2024).</p>
+
+<p>Expo, React Native üzerine inşa edilmiş bir geliştirme platformu ve araç setidir. Expo SDK, konum takibi, kamera, bildirimler, dosya sistemi ve ses kayıt/oynatma gibi yerel cihaz özelliklerine JavaScript API'leri üzerinden erişim sağlar. Bu yaklaşım, projenin geliştirilme sürecini önemli ölçüde hızlandırmış ve platform bağımsız bir kod tabanı ile çalışmayı mümkün kılmıştır.</p>
+
+<div class="architecture-box">
+  <p style="font-weight: bold; margin-bottom: 8pt;">Şekil 3. React Native / Expo Çalışma Prensibi</p>
+  <div class="arch-row">
+    <div class="arch-box" style="background:#E8EFF5;">JavaScript / TypeScript Kodu</div>
+  </div>
+  <div style="font-size:14pt; color:#666;">⬇️ Bridge / JSI ⬇️</div>
+  <div class="arch-row">
+    <div class="arch-box" style="background:#FAF8F5;">iOS Native<br>Modüller</div>
+    <div class="arch-box" style="background:#EAF1E6;">Android Native<br>Modüller</div>
+  </div>
+  <div style="font-size:14pt; color:#666;">⬇️</div>
+  <div class="arch-row">
+    <div class="arch-box">Expo SDK Servisleri<br><small>(Location, Notifications, AV, Camera...)</small></div>
+  </div>
+</div>
+
+<h3>2.1.2. TypeScript</h3>
+
+<p>TypeScript, Microsoft tarafından geliştirilen ve JavaScript'in bir üst kümesi olan statik tipli bir programlama dilidir. Proje genelinde TypeScript kullanılmasının temel nedenleri şunlardır:</p>
+
+<ul>
+  <li><b>Tip güvenliği:</b> Derleme zamanında hata tespiti, çalışma zamanı hatalarını minimize eder.</li>
+  <li><b>Geliştirici deneyimi:</b> IDE otomatik tamamlama ve refactoring desteği sağlar.</li>
+  <li><b>Belgeleme:</b> Interface ve type tanımları, kodun kendi kendini belgelemesini sağlar.</li>
+</ul>
+
+<p>Projede tanımlanan temel tip yapıları aşağıdaki gibidir:</p>
+
+<div class="code-block">// Temel veri tipleri (types/index.ts)
+export type CardType = 'visual' | 'audio';
+
+export interface MemoryCard {
+  id: string;
+  imageUri: string;
+  audioUri?: string;
+  correctLabel: string;
+  type: CardType;
+  hint?: string;
+  relation?: string;
+  isVideo?: boolean;
+  note?: string;
+}
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  createdAt: string;
+  cards: MemoryCard[];
+}</div>
+
+<h3>2.1.3. React Navigation</h3>
+
+<p>React Navigation, React Native uygulamalarında ekran geçişleri ve navigasyon yönetimi için kullanılan en yaygın kütüphanedir. Projede Stack Navigator kullanılarak, tüm ekranlar arasında hiyerarşik bir geçiş yapısı oluşturulmuştur. Geçiş animasyonları olarak iOS platformuna uygun SlideFromRightIOS ve modal ekranlar için ModalSlideFromBottomIOS preset'leri kullanılmıştır.</p>
+
+<p>Navigasyon yapısı, kullanıcının kimlik doğrulama durumuna göre koşullu render edilmektedir: Onboarding tamamlanmamışsa karşılama ekranı, profil seçilmemişse profil seçim ekranı, profil aktifse tüm uygulama ekranları gösterilmektedir.</p>
+
+<h3>2.1.4. AsyncStorage — Yerel Veri Depolama</h3>
+
+<p>AsyncStorage, React Native uygulamalarında kullanılan asenkron, kalıcı ve şifrelenmemiş bir anahtar-değer depolama sistemidir. Projede kullanıcı profilleri, hafıza kartları, rutin verileri, güvenlik ayarları ve tamamlama kayıtları AsyncStorage aracılığıyla cihazın yerel belleğinde saklanmaktadır.</p>
+
+<p>Verilerin JSON formatında serileştirilerek saklanması ve çekilmesi aşağıdaki şekilde gerçekleştirilmektedir:</p>
+
+<div class="code-block">// Veri kaydetme
+const saveProfiles = async (newProfiles: UserProfile[]) => {
+  await AsyncStorage.setItem(PROFILES_KEY, JSON.stringify(newProfiles));
+  setProfiles(newProfiles);
+};
+
+// Veri yükleme
+const loadData = async () => {
+  const profilesData = await AsyncStorage.getItem(PROFILES_KEY);
+  if (profilesData) {
+    setProfiles(JSON.parse(profilesData));
+  }
+};</div>
+
+<h3>2.1.5. Expo Location ve Haversine Formülü</h3>
+
+<p>Güvenlik modülünde hastanın konumu ile ev konumu arasındaki mesafeyi hesaplamak için Haversine formülü kullanılmıştır. Bu formül, iki coğrafi koordinat arasındaki büyük daire mesafesini (great-circle distance) hesaplar:</p>
+
+<div class="architecture-box">
+  <p style="font-weight: bold; margin-bottom: 8pt;">Şekil 5. Haversine Mesafe Hesaplama Formülü</p>
+  <p style="font-size: 14pt; font-family: 'Times New Roman';">
+    a = sin²(Δφ/2) + cos(φ₁) · cos(φ₂) · sin²(Δλ/2)<br>
+    c = 2 · atan2(√a, √(1−a))<br>
+    d = R · c
+  </p>
+  <p style="font-size:10pt; margin-top:8pt;">Burada R = 6.371.000 metre (Dünya yarıçapı), φ = enlem (radian), λ = boylam (radian)</p>
+</div>
+
+<div class="code-block">function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371e3; // Dünya yarıçapı (metre)
+  const φ1 = (lat1 * Math.PI) / 180;
+  const φ2 = (lat2 * Math.PI) / 180;
+  const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+  const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+
+  const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+    Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c; // Metre cinsinden mesafe
+}</div>
+
+<p>Hasta konumu ile ev konumu arasındaki mesafe 100 metreyi aştığında, sistem hastayı "evden uzakta" olarak tanımlar ve ayarlanmış aralıklarla (15, 30, 45 veya 60 dakika) bildirim gönderir.</p>
+
+<h3>2.1.6. Expo Notifications</h3>
+
+<p>Expo Notifications kütüphanesi, projenin bildirim altyapısını oluşturmaktadır. İki farklı bildirim kanalı tanımlanmıştır:</p>
+
+<ul>
+  <li><b>Rutin Hatırlatıcılar (routine-reminders):</b> Günlük rutinlerin zamanında hatırlatılması için CalendarTrigger kullanılarak tekrarlayan bildirimler planlanır.</li>
+  <li><b>Güvenlik Hatırlatıcılar (safety-reminders):</b> Hasta evinden uzaklaştığında konum bilgisi ve eve dönüş hatırlatması içeren bildirimler gönderilir.</li>
+</ul>
+
+<h3>2.1.7. Expo AV — Ses Kayıt ve Oynatma</h3>
+
+<p>Expo AV kütüphanesi, uygulamanın ses bileşenlerini yönetmektedir. Bakıcı modunda yüksek kaliteli ses kaydı (HIGH_QUALITY preset), hafıza egzersizlerinde ve sesli mesajlarda ses oynatma işlemleri bu kütüphane aracılığıyla gerçekleştirilmektedir. Ses oynatma durumu (çalıyor, durduruldu, tamamlandı) PlaybackStatus callback'i ile gerçek zamanlı olarak takip edilmektedir.</p>
+
+<h3>2.1.8. React Context API — Durum Yönetimi</h3>
+
+<p>Projede global durum yönetimi için React Context API ve useReducer Hook'u birlikte kullanılmıştır. Redux gibi harici kütüphanelere ihtiyaç duymadan, bileşenler arası veri paylaşımı sağlanmıştır.</p>
+
+<div class="architecture-box">
+  <p style="font-weight: bold; margin-bottom: 8pt;">Şekil 4. Context API Veri Akış Diyagramı</p>
+  <div class="arch-row">
+    <div class="arch-box" style="background:#FAF8F5;">LanguageProvider</div>
+  </div>
+  <div style="font-size:12pt; color:#666;">↕️ wraps ↕️</div>
+  <div class="arch-row">
+    <div class="arch-box" style="background:#EAF1E6;">ProfileProvider</div>
+  </div>
+  <div style="font-size:12pt; color:#666;">↕️ wraps ↕️</div>
+  <div class="arch-row">
+    <div class="arch-box" style="background:#FDF4EB;">SafetyProvider</div>
+    <div class="arch-box" style="background:#E8F2E8;">RoutineProvider</div>
+    <div class="arch-box" style="background:#E8EFF5;">GameProvider</div>
+  </div>
+  <div style="font-size:12pt; color:#666;">↕️ provides data to ↕️</div>
+  <div class="arch-row">
+    <div class="arch-box" style="background:#FAECEC;">Tüm Uygulama Ekranları</div>
+  </div>
+</div>
+
+<h2>2.2. Yazılım Mimarisi ve Tasarım Desenleri</h2>
+
+<p>Projenin yazılım mimarisi, aşağıdaki tasarım desenleri ve prensipleri üzerine kurulmuştur:</p>
+
+<ul>
+  <li><b>Component-Based Architecture:</b> Her ekran ve UI öğesi bağımsız, yeniden kullanılabilir React bileşenleri olarak tasarlanmıştır.</li>
+  <li><b>Provider Pattern:</b> Context API kullanılarak global durum yönetimi sağlanmıştır. Her modül (Profil, Güvenlik, Rutin, Oyun) kendi Provider'ına sahiptir.</li>
+  <li><b>Barrel Export Pattern:</b> components/index.ts ve screens/index.ts dosyaları ile merkezi dışa aktarma yapılmıştır.</li>
+  <li><b>Design Token System:</b> Tüm görsel değerler (renkler, tipografi, aralıklar, gölgeler) theme.ts dosyasında merkezi olarak yönetilmektedir.</li>
+  <li><b>Separation of Concerns:</b> UI bileşenleri, iş mantığı, veri yönetimi ve servisler ayrı klasörlerde organize edilmiştir.</li>
+</ul>
+
+<h2>2.3. Kullanıcı Arayüzü Tasarım Prensipleri</h2>
+
+<p>Memento uygulamasının UI/UX tasarımı, Alzheimer hastalarına özel erişilebilirlik standartları göz önünde bulundurularak tasarlanmıştır:</p>
+
+<ul>
+  <li><b>WCAG AA Kontrast Oranı:</b> Metin ve arka plan renkleri arasında yüksek kontrast sağlanmıştır.</li>
+  <li><b>Büyük Dokunma Hedefleri:</b> Minimum 48×48 piksel dokunma alanı (TOUCH_TARGET.minSize = 48) ve 56 piksel yüksekliğinde butonlar kullanılmıştır.</li>
+  <li><b>Sıcak, Sakinleştirici Renk Paleti:</b> Amber-kahverengi (#B07D4F) ve adaçayı yeşili (#7B9E6F) ana renkleri, sıcak krem tonlu (#FAF8F5) arka plan ile rahatlatıcı bir atmosfer oluşturmaktadır.</li>
+  <li><b>Yumuşak Animasyonlar:</b> spring ve timing animasyonları ile sakin, dikkat dağıtmayan geçişler sağlanmıştır.</li>
+  <li><b>Pozitif Geri Bildirim:</b> Konfeti animasyonları, motivasyon mesajları ve teşvik edici dil kullanılmıştır.</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- ==================== 3. BULGULAR ==================== -->
+<h1>3. BULGULAR — PROJENİN ÇALIŞMASI VE KABİLİYETLERİ</h1>
+
+<p>Bu bölümde uygulamanın her modülünün çalışma prensibi, teknik detayları ve kabiliyetleri açıklanmaktadır.</p>
+
+<h2>3.1. Uygulama Akışı ve Navigasyon Yapısı</h2>
+
+<p>Uygulama Stack Navigator kullanarak hiyerarşik bir ekran geçiş yapısı sunar. Toplam 14 ekran bulunmaktadır:</p>
+
+<table>
+  <caption>Çizelge 2: Uygulama Ekranları ve İşlevleri</caption>
+  <tr><th>Ekran Adı</th><th>İşlev</th><th>Geçiş Animasyonu</th></tr>
+  <tr><td>AnimatedSplashScreen</td><td>Başlangıç animasyonu</td><td>Fade</td></tr>
+  <tr><td>OnboardingScreen</td><td>İlk açılış karşılama (3 sayfa)</td><td>Horizontal swipe</td></tr>
+  <tr><td>ProfileSelectScreen</td><td>Profil seçimi ve oluşturma</td><td>SlideFromRight</td></tr>
+  <tr><td>HomeScreen</td><td>Ana kontrol paneli</td><td>SlideFromRight</td></tr>
+  <tr><td>FamilyAlbumScreen</td><td>Terapötik görsel albüm</td><td>SlideFromRight</td></tr>
+  <tr><td>VoiceMessagesScreen</td><td>Sesli mesaj dinleme</td><td>SlideFromRight</td></tr>
+  <tr><td>GameScreen</td><td>Hafıza egzersizi oyunu</td><td>SlideFromRight</td></tr>
+  <tr><td>GameCompleteScreen</td><td>Oyun tamamlama kutlaması</td><td>ModalSlideFromBottom</td></tr>
+  <tr><td>RoutineScreen</td><td>Günlük rutin takibi</td><td>SlideFromRight</td></tr>
+  <tr><td>AddRoutineScreen</td><td>Yeni rutin ekleme formu</td><td>SlideFromRight</td></tr>
+  <tr><td>SafetyScreen</td><td>Güvenlik ve konum yönetimi</td><td>SlideFromRight</td></tr>
+  <tr><td>CaregiverScreen</td><td>İçerik yönetimi (bakıcı)</td><td>SlideFromRight</td></tr>
+  <tr><td>AnalyticsScreen</td><td>Analiz ve raporlar</td><td>SlideFromRight</td></tr>
+  <tr><td>SettingsScreen</td><td>Dil ve uygulama ayarları</td><td>ModalSlideFromBottom</td></tr>
+</table>
+
+<div class="architecture-box">
+  <p style="font-weight: bold; margin-bottom: 8pt;">Şekil 6. Navigasyon Yapısı (Stack Navigator)</p>
+  <div class="code-block" style="text-align:left; font-size:9pt;">
+Onboarding (ilk açılış) → ProfileSelect → Home
+                                           ├── FamilyAlbum → AddMemory
+                                           ├── VoiceMessages → AddMemory
+                                           ├── Game → GameComplete
+                                           ├── Routine → AddRoutine
+                                           ├── Safety (Harita Modal)
+                                           ├── Caregiver → Analytics
+                                           └── Settings
+  </div>
+</div>
+
+<h2>3.2. Profil Yönetim Sistemi</h2>
+
+<p>ProfileContext, uygulamanın çok kullanıcılı yapısını yönetir. Her profil benzersiz bir kimlik (ID), isim, oluşturulma tarihi ve hafıza kartları koleksiyonuna sahiptir. Profil verileri AsyncStorage'da JSON formatında saklanmaktadır.</p>
+
+<p>Profil oluşturma işlemi, Date.now().toString() ile benzersiz ID üretir ve yeni profili mevcut profiller listesine ekler. Profil seçimi, silme ve kartların eklenmesi/güncellenmesi/silinmesi işlemleri ProfileContext üzerinden merkezi olarak yönetilmektedir.</p>
+
+<p>Profil seçim ekranı, her profil için ismin ilk harfinden deterministik bir renk üreten getAvatarColor fonksiyonu kullanır. Bu fonksiyon, karakter kodlarının toplamının 8 renklik bir palet üzerinde modüler aritmetikle dağıtılmasına dayanmaktadır.</p>
+
+<h2>3.3. Hafıza Egzersiz Oyun Motoru</h2>
+
+<p>Oyun motoru, GameContext ve GameScreen bileşenleri aracılığıyla çalışır. useReducer Hook'u ile durum yönetimi yapılır ve oyun sırasında kart indeksi, doğru cevap sayısı, deneme sayısı ve başlangıç zamanı takip edilir.</p>
+
+<div class="architecture-box">
+  <p style="font-weight: bold; margin-bottom: 8pt;">Şekil 7. Hafıza Oyunu Akış Şeması</p>
+  <div class="flow-diagram">
+    <div class="flow-box">Oyun Başlat (START_GAME)</div>
+    <div class="flow-arrow">⬇️</div>
+    <div class="flow-box">Kartları Karıştır (Fisher-Yates)</div>
+    <div class="flow-arrow">⬇️</div>
+    <div class="flow-box">Kart Göster + 3 Seçenek Oluştur</div>
+    <div class="flow-arrow">⬇️</div>
+    <div class="arch-row">
+      <div class="flow-box" style="background:#E8F2E8;">✅ Doğru → Sonraki Kart</div>
+      <div class="flow-box" style="background:#FAECEC;">❌ Yanlış → Seçenek Soluk + İpucu</div>
+    </div>
+    <div class="flow-arrow">⬇️</div>
+    <div class="flow-box">Tüm Kartlar Tamamlandı → GameComplete 🎉</div>
+  </div>
+</div>
+
+<p><b>Fisher-Yates Karıştırma Algoritması:</b> Kartların rastgele sıralanması için kullanılan bu algoritma, O(n) zaman karmaşıklığı ile eşit olasılıklı permütasyonlar üretir. Her oyun oturumunda kartlar yeniden karıştırılarak tekrardan kaçınılır.</p>
+
+<p><b>Seçenek Oluşturma:</b> Her kart için doğru cevap ve 2 yanlış seçenek oluşturulur. Yanlış seçenekler, aynı tipteki diğer kartlardan rastgele seçilerek ve karıştırılarak sunulur.</p>
+
+<h2>3.4. Aile Albümü ve Sesli Mesajlar Modülü</h2>
+
+<p>Aile Albümü (FamilyAlbumScreen), görsel hafıza kartlarını carousel formatında sunan terapötik bir ekrandır. Hasta, fotoğrafları ve videoları yatay kaydırma ile gezebilir. Her medyanın altında kalp ikonu ile duygusal notlar gösterilir. expo-av kütüphanesi ile video oynatma desteği de sağlanmaktadır.</p>
+
+<p>Sesli Mesajlar (VoiceMessagesScreen), işitsel hafıza kartlarını kart listesi formatında sunar. Her kart, gönderenin adı, yakınlık bilgisi, mesaj notu ve tek tuşla çalıştırılabilen bir ses oynatıcı içerir. Ses oynatma durumu (çalıyor/durduruldu) görsel pulse indikatörü ile gösterilir.</p>
+
+<p>Her iki modülde de FloatingActionButton ile kullanıcı kolayca yeni anı (fotoğraf, video veya ses kaydı) ekleyebilir. AddMemoryScreen, hem görsel hem de işitsel içerik ekleme için ortak bir form ekranı olarak tasarlanmıştır.</p>
+
+<h2>3.5. Günlük Rutin Yönetim Sistemi</h2>
+
+<p>RoutineContext, günlük rutinlerin oluşturulması, zamanlanması, tamamlanması ve raporlanmasını yönetir. Her rutin bir başlık, açıklama, kategori, saat, aktif günler ve bildirim durumuna sahiptir.</p>
+
+<table>
+  <caption>Çizelge 3: Rutin Kategorileri Tablosu</caption>
+  <tr><th>Kategori</th><th>İkon</th><th>Renk</th><th>Türkçe</th><th>İngilizce</th></tr>
+  <tr><td>medication</td><td>🏥</td><td>#E57373</td><td>İlaç</td><td>Medication</td></tr>
+  <tr><td>meal</td><td>🍽️</td><td>#FFB74D</td><td>Yemek</td><td>Meal</td></tr>
+  <tr><td>exercise</td><td>🚶</td><td>#81C784</td><td>Egzersiz</td><td>Exercise</td></tr>
+  <tr><td>appointment</td><td>📅</td><td>#64B5F6</td><td>Randevu</td><td>Appointment</td></tr>
+  <tr><td>hygiene</td><td>💧</td><td>#9575CD</td><td>Hijyen</td><td>Hygiene</td></tr>
+  <tr><td>social</td><td>👥</td><td>#F06292</td><td>Sosyal</td><td>Social</td></tr>
+  <tr><td>other</td><td>🔖</td><td>#90A4AE</td><td>Diğer</td><td>Other</td></tr>
+</table>
+
+<p>Rutin tamamlama mekanizması, tarihe göre (YYYY-MM-DD formatında) tamamlama kayıtları oluşturur ve son 30 günlük verileri saklayarak istatistiksel analiz yapılmasını sağlar. ProgressRing bileşeni ile günlük ilerleme görsel olarak gösterilir.</p>
+
+<p>Rutin hatırlatıcıları, Expo Notifications'ın CalendarTriggerInput mekanizması ile planlanır. Her rutin eklendiğinde veya güncellendiğinde, mevcut bildirim iptal edilip yeni bir bildirim zamanlanır.</p>
+
+<h2>3.6. Güvenlik ve Konum Takip Modülü</h2>
+
+<p>SafetyContext, hastanın güvenliğini sağlamak için kapsamlı bir konum yönetim sistemi sunar:</p>
+
+<table>
+  <caption>Çizelge 4: Güvenlik Profili Veri Yapısı</caption>
+  <tr><th>Alan</th><th>Tip</th><th>Açıklama</th></tr>
+  <tr><td>fullName</td><td>string</td><td>Hastanın tam adı</td></tr>
+  <tr><td>homeLocation</td><td>HomeLocation | null</td><td>Ev koordinatları, adres ve isim</td></tr>
+  <tr><td>isMonitoringEnabled</td><td>boolean</td><td>Konum takibi aktif/pasif durumu</td></tr>
+  <tr><td>reminderIntervalMinutes</td><td>number</td><td>Bildirim aralığı (15/30/45/60 dk)</td></tr>
+  <tr><td>emergencyContact</td><td>string?</td><td>Acil durum iletişim bilgisi</td></tr>
+  <tr><td>lastKnownLocation</td><td>object?</td><td>Son bilinen konum ve zaman damgası</td></tr>
+</table>
+
+<p>Güvenlik ekranında (SafetyScreen), react-native-maps kütüphanesi ile interaktif harita görüntülenir. Kullanıcı haritaya dokunarak ev konumunu seçer, reverseGeocode fonksiyonu ile koordinatlar otomatik olarak adrese çevrilir.</p>
+
+<p>Durum gösterimi için pulse animasyonu kullanılır: hasta evdeyken yeşil kalkan ikonu sabit gösterilirken, evden uzaklaştığında turuncu uyarı ikonu titreşim animasyonu ile dikkat çeker.</p>
+
+<h2>3.7. Arka Plan Konum Takibi ve Bildirim Sistemi</h2>
+
+<p>Arka plan konum takibi, Expo Task Manager ve Expo Location kütüphaneleri birlikte kullanılarak gerçekleştirilmektedir. 'background-location-task' adlı görev, uygulama kapalıyken bile çalışmaya devam eder.</p>
+
+<div class="architecture-box">
+  <p style="font-weight: bold; margin-bottom: 8pt;">Şekil 8. Arka Plan Konum Takibi Akış Diyagramı</p>
+  <div class="flow-diagram">
+    <div class="flow-box">📍 Konum Güncellemesi (50m hareket)</div>
+    <div class="flow-arrow">⬇️</div>
+    <div class="flow-box">📏 Haversine ile Ev Mesafesi Hesapla</div>
+    <div class="flow-arrow">⬇️</div>
+    <div class="arch-row">
+      <div class="flow-box" style="background:#E8F2E8;">≤100m → Evde, İşlem Yok</div>
+      <div class="flow-box" style="background:#FDF4EB;">>100m → Evden Uzak</div>
+    </div>
+    <div class="flow-arrow">⬇️</div>
+    <div class="flow-box">⏱️ Son bildirimden bu yana yeterli süre geçti mi?</div>
+    <div class="flow-arrow">⬇️</div>
+    <div class="flow-box">🔔 Hatırlatma Bildirimi Gönder (Eve Dönüş İçin)</div>
+  </div>
+</div>
+
+<p>Arka plan görevi şu adımları takip eder: (1) Konum güncellemesi alınır, (2) AsyncStorage'dan güvenlik profili okunur, (3) Haversine formülü ile ev mesafesi hesaplanır, (4) 100 metreden uzaksa ve ayarlanan bildirim aralığı geçmişse, hastaya eve dönüş hatırlatması gönderilir. Bildirime tıklandığında harita uygulaması açılarak yol tarifi sunulur.</p>
+
+<h2>3.8. Bakıcı Modu ve Analiz Raporları</h2>
+
+<p>CaregiverScreen, bakıcıların hafıza kartı içeriklerini yönetmesini sağlar. Fotoğraf ve ses kartları ayrı sekmelerde listelenir, animasyonlu tab underline göstergesi aktif sekmeyi belirtir. FloatingActionButton ile fotoğraf veya ses ekleme modalı açılır.</p>
+
+<p>Ses kaydı için expo-av'nin Recording API'si kullanılmaktadır. Kayıt sırasında süre sayacı (interval) ile kullanıcıya geri bildirim verilir. Kaydedilen sesler cihazın önbellek dizininde saklanır.</p>
+
+<p>AnalyticsScreen, bakıcılara rutin tamamlama oranları (bugün, 7 gün, 30 gün) ve hafıza egzersizi istatistikleri sunar. AnimatedNumber bileşeni ile sayısal değerler sıfırdan yukarı doğru sayma animasyonu ile gösterilir.</p>
+
+<h2>3.9. Çoklu Dil Desteği (i18n)</h2>
+
+<p>Uygulama, LanguageContext aracılığıyla Türkçe ve İngilizce dillerini desteklemektedir. Toplam 165 çeviri anahtarı tanımlanmış olup, tüm kullanıcı arayüzü metinleri bu sistem üzerinden dinamik olarak sunulmaktadır. Seçilen dil AsyncStorage'da kalıcı olarak saklanır.</p>
+
+<p>Dil seçimi profil seçim ekranında ve ayarlar ekranında bayrak ikonları ile yapılabilir. Tarih formatlaması (toLocaleDateString), selamlama mesajları ve hata bildirimleri de dil bağlamına uygun olarak çevrilmektedir.</p>
+
+<h2>3.10. Kod Yapısı ve Açıklamaları</h2>
+
+<p>Proje, aşağıdaki klasör yapısında organize edilmiştir:</p>
+
+<table>
+  <caption>Çizelge 5: Dosya ve Klasör Yapısı İstatistikleri</caption>
+  <tr><th>Klasör</th><th>Dosya Sayısı</th><th>İçerik</th></tr>
+  <tr><td>src/screens/</td><td>16</td><td>Uygulama ekranları (UI + iş mantığı)</td></tr>
+  <tr><td>src/components/</td><td>7</td><td>Yeniden kullanılabilir UI bileşenleri</td></tr>
+  <tr><td>src/context/</td><td>4</td><td>Durum yönetimi (Provider'lar)</td></tr>
+  <tr><td>src/constants/</td><td>1</td><td>Tasarım sistemi tokenleri (theme.ts)</td></tr>
+  <tr><td>src/i18n/</td><td>3</td><td>Çoklu dil çevirileri</td></tr>
+  <tr><td>src/services/</td><td>1</td><td>Arka plan görevleri</td></tr>
+  <tr><td>src/types/</td><td>1</td><td>TypeScript tip tanımları</td></tr>
+  <tr><td>src/navigation/</td><td>1</td><td>Navigasyon yapılandırması</td></tr>
+  <tr><td><b>Toplam</b></td><td><b>37 dosya</b></td><td><b>~9.839 satır TypeScript/TSX kodu</b></td></tr>
+</table>
+
+<table>
+  <caption>Çizelge 6: Context API Modülleri ve Sorumlulukları</caption>
+  <tr><th>Context</th><th>Satır Sayısı</th><th>Sorumluluk</th></tr>
+  <tr><td>ProfileContext</td><td>180</td><td>Profil CRUD, kart yönetimi, oturum</td></tr>
+  <tr><td>SafetyContext</td><td>328</td><td>Konum takibi, bildirimler, güvenlik profili</td></tr>
+  <tr><td>RoutineContext</td><td>301</td><td>Rutin yönetimi, bildirim planlama, tamamlama</td></tr>
+  <tr><td>GameContext</td><td>165</td><td>Oyun durumu, skor takibi, ilerleme</td></tr>
+  <tr><td>LanguageContext</td><td>~50</td><td>Dil seçimi ve çeviri fonksiyonları</td></tr>
+</table>
+
+<div class="page-break"></div>
+
+<!-- ==================== 4. TARTIŞMA VE SONUÇ ==================== -->
+<h1>4. TARTIŞMA VE SONUÇ</h1>
+
+<p>Bu proje kapsamında geliştirilen Memento uygulaması, Alzheimer hastaları ve bakıcıları için kapsamlı bir terapötik mobil çözüm olarak başarıyla gerçekleştirilmiştir. Uygulama, hafıza egzersizleri, günlük rutin yönetimi, GPS tabanlı güvenlik takibi, aile albümü ve sesli mesajlar gibi modülleri tek bir platformda birleştirerek, hastaların günlük yaşamlarını desteklemeyi amaçlamıştır.</p>
+
+<p><b>Projenin Amaçlarına Ulaşma Durumu:</b></p>
+<ul>
+  <li>✅ Görsel ve işitsel hafıza egzersizleri başarıyla implement edilmiştir. Fisher-Yates karıştırma algoritması ile adil ve rastgele kart sıralaması, ipucu sistemi ve pozitif geri bildirimlerle stressiz bir deneyim sağlanmıştır.</li>
+  <li>✅ 7 kategoride günlük rutin takibi, CalendarTrigger ile zamanlanmış bildirimler ve ilerleme raporları oluşturulmuştur.</li>
+  <li>✅ Haversine formülü ile GPS tabanlı mesafe hesaplama, arka plan konum takibi ve otomatik eve dönüş hatırlatıcıları gerçekleştirilmiştir.</li>
+  <li>✅ Aile albümü ve sesli mesajlar ile hastanın duygusal bağlarını güçlendiren terapötik modüller eklenmiştir.</li>
+  <li>✅ Bakıcı modu ile içerik yönetimi ve analiz raporları sunulmuştur.</li>
+  <li>✅ WCAG AA standartlarına uygun, büyük dokunma hedefli, yüksek kontrastlı ve sakinleştirici renk paletli bir arayüz tasarlanmıştır.</li>
+</ul>
+
+<p><b>Projenin Zorlukları ve Çözüm Yaklaşımları:</b></p>
+
+<p>Projenin en zorlu kısmı, arka plan konum takibi sisteminin tasarlanması ve implementasyonu olmuştur. iOS ve Android platformlarının arka plan görevleri konusundaki farklı kısıtlamaları (iOS'un arka plan süre limitleri, Android'in Doze modu), Expo Task Manager kullanılarak üstesinden gelinmiştir. Konum güncellemelerinin pil tüketimini minimize edecek şekilde optimize edilmesi (distanceInterval: 50m, timeInterval: 15 dakika) önemli bir mühendislik kararıydı.</p>
+
+<p>Bir diğer zorluk, Alzheimer hastalarına uygun bir kullanıcı arayüzü tasarlamak olmuştur. Bu hastalarda bilişsel yük minimumda tutulmalı, navigasyon sezgisel olmalı ve görsel geri bildirimler açık olmalıdır. Design Token sistemi (theme.ts) ile merkezi tasarım yönetimi, bu tutarlılığın sağlanmasında kritik bir rol oynamıştır.</p>
+
+<p><b>Projenin Eksiklikleri ve Gelecek Öneriler:</b></p>
+
+<ul>
+  <li><b>Bulut Senkronizasyonu:</b> Veriler şu an yalnızca yerel olarak saklanmaktadır. Supabase veya Firebase gibi bir backend entegrasyonu ile cihazlar arası senkronizasyon ve veri yedekleme sağlanabilir.</li>
+  <li><b>SOS / Acil Durum Butonu:</b> Hasta kaybolduğunda veya paniklendiğinde tek tuşla acil durum kişilerine SMS ve konum gönderme özelliği eklenebilir.</li>
+  <li><b>Yapay Zeka Entegrasyonu:</b> Bilişsel performans trendlerini analiz eden ve bakıcılara kişiselleştirilmiş öneriler sunan bir AI modülü geliştirilebilir.</li>
+  <li><b>Wearable Entegrasyonu:</b> Apple Watch veya akıllı bileklik ile kalp atış hızı ve aktivite takibi entegre edilebilir.</li>
+  <li><b>Bakıcı Web Portalı:</b> Bakıcıların bilgisayardan içerik yönetimi yapabilmesi için bir web paneli geliştirilebilir.</li>
+  <li><b>Çevrimdışı Harita Desteği:</b> İnternet bağlantısı olmadığında da harita ve yol tarifi erişimi sağlanabilir.</li>
+</ul>
+
+<p><b>Sonuç:</b></p>
+
+<p>Memento, yaklaşık 9.839 satır TypeScript/TSX kodu ve 37 dosyadan oluşan, 12'den fazla Expo SDK modülü kullanan kapsamlı bir mobil uygulamadır. Proje, React Native ekosisteminin sunduğu cross-platform avantajından yararlanarak tek bir kod tabanı ile hem iOS hem de Android cihazlarda çalışabilmektedir. Uygulamanın terapötik yaklaşımı, bilimsel araştırmalara dayanan bilişsel egzersiz prensipleri ile Alzheimer hastalarının yaşam kalitesini artırmayı hedeflemektedir. Gelecekte bulut entegrasyonu, yapay zeka ve wearable desteği ile uygulamanın kapsamı ve etkinliği önemli ölçüde genişletilebilir.</p>
+
+<div class="page-break"></div>
+
+<!-- ==================== 5. KAYNAKLAR ==================== -->
+<h1>5. KAYNAKLAR</h1>
+
+<p class="no-indent">[1] World Health Organization. (2024). <i>Dementia - Key Facts</i>. https://www.who.int/news-room/fact-sheets/detail/dementia</p>
+
+<p class="no-indent">[2] Meta Platforms, Inc. (2024). <i>React Native Documentation</i>. https://reactnative.dev/docs/getting-started</p>
+
+<p class="no-indent">[3] Expo. (2024). <i>Expo SDK Documentation v54</i>. https://docs.expo.dev/</p>
+
+<p class="no-indent">[4] Microsoft. (2024). <i>TypeScript Handbook</i>. https://www.typescriptlang.org/docs/handbook/</p>
+
+<p class="no-indent">[5] React Navigation Team. (2024). <i>React Navigation Documentation v7</i>. https://reactnavigation.org/docs/getting-started</p>
+
+<p class="no-indent">[6] Sinnott, R. W. (1984). Virtues of the Haversine. <i>Sky and Telescope</i>, 68(2), 159. (Haversine formülü referansı)</p>
+
+<p class="no-indent">[7] Tárraga, L., Boada, M., et al. (2006). A randomised pilot study to assess the efficacy of an interactive, multimedia tool of cognitive stimulation in Alzheimer's disease. <i>Journal of Neurology, Neurosurgery & Psychiatry</i>, 77(10), 1116-1121.</p>
+
+<p class="no-indent">[8] Cotelli, M., Manenti, R., et al. (2012). Effectiveness of music therapy in patients with dementia: a systematic review. <i>Aging & Mental Health</i>, 16(5), 635-646.</p>
+
+<p class="no-indent">[9] Astell, A. J., et al. (2019). Technology and Dementia: The Future is Now. <i>Dementia and Geriatric Cognitive Disorders</i>, 47(3), 131-139.</p>
+
+<p class="no-indent">[10] W3C. (2023). <i>Web Content Accessibility Guidelines (WCAG) 2.2</i>. https://www.w3.org/TR/WCAG22/</p>
+
+<p class="no-indent">[11] Expo. (2024). <i>Expo Location - Background Location Updates</i>. https://docs.expo.dev/versions/latest/sdk/location/</p>
+
+<p class="no-indent">[12] Expo. (2024). <i>Expo Task Manager</i>. https://docs.expo.dev/versions/latest/sdk/task-manager/</p>
+
+<p class="no-indent">[13] React Native Community. (2024). <i>AsyncStorage Documentation</i>. https://react-native-async-storage.github.io/async-storage/</p>
+
+<p class="no-indent">[14] Knuth, D. E. (1997). <i>The Art of Computer Programming, Vol. 2: Seminumerical Algorithms</i>. Addison-Wesley. (Fisher-Yates karıştırma algoritması referansı)</p>
+
+</body>
+</html>

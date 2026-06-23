@@ -1,5 +1,5 @@
 /**
- * Memento - Routine Context
+ * Memento - Routine Context (with Supabase Integration)
  * Günlük rutin ve hatırlatma yönetimi
  */
 
@@ -8,6 +8,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { useProfile } from './ProfileContext';
+import {
+  isSupabaseConfigured,
+  getRoutinesFromSupabase,
+  addRoutineToSupabase,
+  deleteRoutineFromSupabase,
+  getRoutineCompletionsFromSupabase,
+  addRoutineCompletionToSupabase,
+} from '../config/supabaseService';
+import { supabase } from '../config/supabase';
 
 const ROUTINES_KEY = 'memento_routines';
 const COMPLETIONS_KEY = 'memento_completions';
@@ -44,6 +53,7 @@ export interface Routine {
 }
 
 export interface RoutineCompletion {
+  id?: string;
   routineId: string;
   completedAt: string;
   date: string; // YYYY-MM-DD
@@ -72,27 +82,67 @@ export function RoutineProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    loadData();
+    if (currentProfile) {
+      loadData(currentProfile.id);
+    } else {
+      setRoutines([]);
+      setCompletions([]);
+      setIsLoading(false);
+    }
     setupNotifications();
-  }, []);
+  }, [currentProfile?.id]);
 
-  const loadData = async () => {
+  const loadData = async (profileId: string) => {
+    setIsLoading(true);
     try {
-      const [routinesData, completionsData] = await Promise.all([
-        AsyncStorage.getItem(ROUTINES_KEY),
-        AsyncStorage.getItem(COMPLETIONS_KEY),
-      ]);
+      let loadedRoutines: Routine[] = [];
+      let loadedCompletions: RoutineCompletion[] = [];
+      const isOnline = isSupabaseConfigured();
 
-      if (routinesData) {
-        setRoutines(JSON.parse(routinesData));
+      if (isOnline) {
+        try {
+          const dbRoutines = await getRoutinesFromSupabase(profileId);
+          loadedRoutines = dbRoutines.map(r => ({
+            id: r.id,
+            title: r.title,
+            description: r.description || undefined,
+            category: (r.category || 'other') as RoutineCategory,
+            time: r.time,
+            days: r.days,
+            isEnabled: r.is_enabled,
+            icon: r.icon || 'bookmark',
+            color: r.color || '#90A4AE',
+            createdAt: r.created_at,
+            imageUri: r.image_uri || undefined,
+          }));
+
+          const today = new Date().toISOString().split('T')[0];
+          const dbCompletions = await getRoutineCompletionsFromSupabase(profileId, today);
+          loadedCompletions = dbCompletions.map(c => ({
+            id: c.id,
+            routineId: c.routine_id,
+            completedAt: c.completed_at,
+            date: c.date,
+          }));
+
+          await AsyncStorage.setItem(ROUTINES_KEY + '_' + profileId, JSON.stringify(loadedRoutines));
+          await AsyncStorage.setItem(COMPLETIONS_KEY + '_' + profileId, JSON.stringify(loadedCompletions));
+        } catch (e) {
+          console.log('Error from Supabase, loading local routines...', e);
+          const localRoutines = await AsyncStorage.getItem(ROUTINES_KEY + '_' + profileId);
+          const localCompletions = await AsyncStorage.getItem(COMPLETIONS_KEY + '_' + profileId);
+          if (localRoutines) loadedRoutines = JSON.parse(localRoutines);
+          if (localCompletions) loadedCompletions = JSON.parse(localCompletions);
+        }
+      } else {
+        const localRoutines = await AsyncStorage.getItem(ROUTINES_KEY + '_' + profileId);
+        const localCompletions = await AsyncStorage.getItem(COMPLETIONS_KEY + '_' + profileId);
+        if (localRoutines) loadedRoutines = JSON.parse(localRoutines);
+        if (localCompletions) loadedCompletions = JSON.parse(localCompletions);
       }
-      if (completionsData) {
-        const allCompletions = JSON.parse(completionsData) as RoutineCompletion[];
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-        const recentCompletions = allCompletions.filter((c) => new Date(c.date) >= thirtyDaysAgo);
-        setCompletions(recentCompletions);
-      }
+
+      setRoutines(loadedRoutines);
+      setCompletions(loadedCompletions);
     } catch (error) {
       console.log('Error loading routines:', error);
     } finally {
@@ -100,18 +150,20 @@ export function RoutineProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const saveRoutines = async (newRoutines: Routine[]) => {
+  const saveRoutinesLocally = async (newRoutines: Routine[]) => {
+    if (!currentProfile) return;
     try {
-      await AsyncStorage.setItem(ROUTINES_KEY, JSON.stringify(newRoutines));
+      await AsyncStorage.setItem(ROUTINES_KEY + '_' + currentProfile.id, JSON.stringify(newRoutines));
       setRoutines(newRoutines);
     } catch (error) {
       console.log('Error saving routines:', error);
     }
   };
 
-  const saveCompletions = async (newCompletions: RoutineCompletion[]) => {
+  const saveCompletionsLocally = async (newCompletions: RoutineCompletion[]) => {
+    if (!currentProfile) return;
     try {
-      await AsyncStorage.setItem(COMPLETIONS_KEY, JSON.stringify(newCompletions));
+      await AsyncStorage.setItem(COMPLETIONS_KEY + '_' + currentProfile.id, JSON.stringify(newCompletions));
       setCompletions(newCompletions);
     } catch (error) {
       console.log('Error saving completions:', error);
@@ -139,13 +191,11 @@ export function RoutineProvider({ children }: { children: ReactNode }) {
     if (!routine.isEnabled || routine.days.length === 0) return undefined;
 
     try {
-      // Mevcut bildirimi iptal et
       if (routine.notificationId) {
         await Notifications.cancelScheduledNotificationAsync(routine.notificationId);
       }
 
       const [hours, minutes] = routine.time.split(':').map(Number);
-      const categoryInfo = ROUTINE_CATEGORIES[routine.category];
 
       const notificationId = await Notifications.scheduleNotificationAsync({
         content: {
@@ -173,50 +223,89 @@ export function RoutineProvider({ children }: { children: ReactNode }) {
     if (notificationId) {
       try {
         await Notifications.cancelScheduledNotificationAsync(notificationId);
-      } catch (error) {
-        console.log('Error canceling notification:', error);
-      }
+      } catch (error) {}
     }
   };
 
   const addRoutine = async (routineData: Omit<Routine, 'id' | 'createdAt' | 'notificationId'>) => {
-    const newRoutine: Routine = {
-      ...routineData,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-    };
+    if (!currentProfile) return;
+    let newRoutine: Routine;
 
-    // Bildirim planla
+    if (isSupabaseConfigured()) {
+      const dbRoutine = await addRoutineToSupabase({
+        profile_id: currentProfile.id,
+        title: routineData.title,
+        description: routineData.description || null,
+        category: routineData.category,
+        time: routineData.time,
+        days: routineData.days,
+        is_enabled: routineData.isEnabled,
+        icon: routineData.icon,
+        color: routineData.color,
+        image_uri: routineData.imageUri || null,
+      });
+      newRoutine = {
+        ...routineData,
+        id: dbRoutine.id,
+        createdAt: dbRoutine.created_at,
+      };
+    } else {
+      newRoutine = {
+        ...routineData,
+        id: Date.now().toString(),
+        createdAt: new Date().toISOString(),
+      };
+    }
+
     const notificationId = await scheduleNotification(newRoutine);
     newRoutine.notificationId = notificationId;
 
     const newRoutines = [...routines, newRoutine];
-    await saveRoutines(newRoutines);
+    await saveRoutinesLocally(newRoutines);
   };
 
   const updateRoutine = async (id: string, updates: Partial<Routine>) => {
+    if (!currentProfile) return;
     const routine = routines.find((r) => r.id === id);
     if (!routine) return;
 
+    if (isSupabaseConfigured()) {
+      try {
+        await supabase.from('routines').update({
+          title: updates.title,
+          description: updates.description,
+          category: updates.category,
+          time: updates.time,
+          days: updates.days,
+          is_enabled: updates.isEnabled,
+        }).eq('id', id);
+      } catch(e){}
+    }
+
     const updatedRoutine = { ...routine, ...updates };
 
-    // Bildirim güncelle
     await cancelNotification(routine.notificationId);
     const notificationId = await scheduleNotification(updatedRoutine);
     updatedRoutine.notificationId = notificationId;
 
     const newRoutines = routines.map((r) => (r.id === id ? updatedRoutine : r));
-    await saveRoutines(newRoutines);
+    await saveRoutinesLocally(newRoutines);
   };
 
   const deleteRoutine = async (id: string) => {
+    if (!currentProfile) return;
+
+    if (isSupabaseConfigured()) {
+      try { await deleteRoutineFromSupabase(id); } catch(e){}
+    }
+
     const routine = routines.find((r) => r.id === id);
     if (routine?.notificationId) {
       await cancelNotification(routine.notificationId);
     }
 
     const newRoutines = routines.filter((r) => r.id !== id);
-    await saveRoutines(newRoutines);
+    await saveRoutinesLocally(newRoutines);
   };
 
   const toggleRoutine = async (id: string) => {
@@ -227,20 +316,36 @@ export function RoutineProvider({ children }: { children: ReactNode }) {
   };
 
   const completeRoutine = async (id: string) => {
+    if (!currentProfile) return;
     const today = new Date().toISOString().split('T')[0];
 
     const alreadyCompleted = completions.some((c) => c.routineId === id && c.date === today);
-
     if (alreadyCompleted) return;
 
-    const newCompletion: RoutineCompletion = {
-      routineId: id,
-      completedAt: new Date().toISOString(),
-      date: today,
-    };
+    let newCompletion: RoutineCompletion;
+
+    if (isSupabaseConfigured()) {
+      const dbCompletion = await addRoutineCompletionToSupabase({
+        profile_id: currentProfile.id,
+        routine_id: id,
+        date: today,
+      });
+      newCompletion = {
+        id: dbCompletion.id,
+        routineId: id,
+        completedAt: dbCompletion.completed_at,
+        date: today,
+      };
+    } else {
+      newCompletion = {
+        routineId: id,
+        completedAt: new Date().toISOString(),
+        date: today,
+      };
+    }
 
     const newCompletions = [...completions, newCompletion];
-    await saveCompletions(newCompletions);
+    await saveCompletionsLocally(newCompletions);
   };
 
   const isCompletedToday = (id: string): boolean => {
@@ -262,7 +367,6 @@ export function RoutineProvider({ children }: { children: ReactNode }) {
     return Math.round((relevantCompletions.length / totalPossible) * 100);
   };
 
-  // Bugünün rutinleri
   const todayRoutines = routines
     .filter(r => {
       const today = new Date().getDay();
